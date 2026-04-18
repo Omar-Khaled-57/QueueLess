@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://queueless.vercel.app/sitemap.xml

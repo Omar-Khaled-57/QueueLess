@@ -73,7 +73,7 @@ export default function HistoryPage() {
         <div className="bg-primary px-6 pt-10 pb-16 arch-header md:rounded-b-none md:rounded-bl-[4rem] relative overflow-hidden">
           <div className="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-white/10" />
           <div className="absolute bottom-4 -left-4 w-24 h-24 rounded-full bg-secondary/25" />
-          <div className="relative z-10 flex justify-between items-start">
+          <div className="relative z-10 flex justify-between items-start [&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white">
             <div>
               <p className="text-white/70 text-sm font-medium">Your Activity</p>
               <h1 className="text-white text-3xl font-bold">{t("history")}</h1>

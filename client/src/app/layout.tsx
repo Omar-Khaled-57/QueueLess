@@ -25,7 +25,42 @@ const cairo = Cairo({
 
 export const metadata: Metadata = {
   title: "QueueLess — Smart Queue & Appointment System",
-  description: "Replace physical waiting lines with a smart digital queue system. Book remotely and track your turn in real-time.",
+  description: "Eliminate physical waiting lines with a real-time digital queue system. Join remotely, track your turn live, and save hours of time.",
+  keywords: ["queue management", "digital ticketing", "appointment scheduling", "real-time tracking", "smart queue"],
+  authors: [{ name: "Omar Khaled" }],
+  creator: "Omar Khaled",
+  publisher: "QueueLess",
+  metadataBase: new URL("https://queueless.vercel.app"), // Replace with actual URL if known
+  icons: {
+    icon: "/webcon.png",
+    apple: "/webcon.png",
+  },
+  openGraph: {
+    title: "QueueLess — Smart Queue & Appointment System",
+    description: "Replace physical waiting lines with a smart digital queue system. Book remotely and track your turn in real-time.",
+    url: "https://queueless.vercel.app",
+    siteName: "QueueLess",
+    images: [
+      {
+        url: "/logo512x512tr.webp",
+        width: 1200,
+        height: 630,
+        alt: "QueueLess Dashboard Preview",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "QueueLess — Smart Queue & Appointment System",
+    description: "Eliminate physical waiting lines with real-time digital queuing.",
+    images: ["/logo512x512tr.webp"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

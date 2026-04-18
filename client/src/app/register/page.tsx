@@ -57,7 +57,7 @@ export default function Register() {
       <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-primary/5 translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
       {/* Toggle — fixed top-right regardless of RTL */}
-      <div className="fixed top-6 z-50" style={{ right: "1.5rem" }}>
+      <div className="fixed top-6 z-50 [&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white" style={{ right: "1.5rem" }}>
         <ThemeLangToggle />
       </div>
 

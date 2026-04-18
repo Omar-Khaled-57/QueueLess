@@ -21,6 +21,7 @@ export default function Navigation() {
     { icon: LayoutDashboard, label: t("dashboard"), href: "/admin" },
     { icon: Users, label: t("queue_list"), href: "/admin/queue" },
     { icon: BarChart3, label: t("analytics"), href: "/admin/analytics" },
+    { icon: User, label: t("profile"), href: "/profile" },
     { icon: Settings, label: t("settings"), href: "/settings" },
   ] : [
     { icon: Home, label: t("home"), href: "/home" },

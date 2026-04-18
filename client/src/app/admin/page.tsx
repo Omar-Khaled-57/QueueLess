@@ -126,12 +126,14 @@ export default function AdminDashboard() {
           </div>
           <div className="flex items-center justify-between relative z-10">
             <div>
-              <p className="text-white/60 text-sm font-medium">Admin Panel</p>
-              <h1 className="text-white text-2xl font-bold">{business?.name || "My Business"}</h1>
+              <p className="text-white/60 text-sm font-medium">{t("admin_panel")}</p>
+              <h1 className="text-white text-2xl font-bold">
+                {(locale === "ar" && business?.name_ar) ? business.name_ar : (business?.name || "My Business")}
+              </h1>
             </div>
             <div className="flex items-center gap-3">
               <Link href="/admin/analytics" className="hidden sm:block px-4 py-2 border border-white/20 text-white rounded-xl font-bold text-sm hover:bg-white/10 transition-colors">
-                View Analytics
+                {t("view_analytics")}
               </Link>
               <button className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors relative">
                 <Bell className="w-5 h-5 text-white" />
@@ -143,9 +145,9 @@ export default function AdminDashboard() {
           {/* Quick Stats */}
           <div className="md:grid md:grid-cols-3 flex gap-3 mt-6 relative z-10 md:mb-4">
             {[
-              { value: waiting.length, label: "Waiting" },
-              { value: analytics?.served_today ?? 0, label: "Served" },
-              { value: `~${queueInfo?.avg_service_time_min ?? 0}m`, label: "Avg Wait" },
+              { value: waiting.length, label: t("waiting") },
+              { value: analytics?.served_today ?? 0, label: t("served") },
+              { value: `~${queueInfo?.avg_service_time_min ?? 0}${t("min")}`, label: t("avg_wait") },
             ].map(({ value, label }) => (
               <div key={label} className="flex-1 bg-white/15 backdrop-blur rounded-2xl p-3 text-center">
                 <p className="text-white font-black text-xl leading-none">{value}</p>
@@ -168,7 +170,7 @@ export default function AdminDashboard() {
                   <motion.div layout className="bg-linear-to-br from-primary to-primary-light rounded-3xl p-5 text-white shadow-lg">
                     <div className="flex items-center gap-2 mb-4">
                       <span className="w-2.5 h-2.5 bg-sun rounded-full animate-pulse" />
-                      <span className="text-white/70 text-xs font-black uppercase tracking-wider">Now Serving</span>
+                      <span className="text-white/70 text-xs font-black uppercase tracking-wider">{t("now_serving")}</span>
                     </div>
                     <div className="flex items-center justify-between mb-5">
                       <div>
@@ -184,7 +186,7 @@ export default function AdminDashboard() {
                         className="flex-1 bg-white text-secondary py-3 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-white/90 transition-all"
                       >
                         <ChevronRight className="w-4 h-4" />
-                        Call Next
+                        {t("call_next")}
                       </motion.button>
                       <motion.button
                         whileTap={{ scale: 0.96 }}
@@ -192,17 +194,17 @@ export default function AdminDashboard() {
                         className="flex-1 bg-white/20 text-white py-3 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-white/30 transition-all"
                       >
                         <SkipForward className="w-4 h-4" />
-                        Skip
+                        {t("skip")}
                       </motion.button>
                     </div>
                   </motion.div>
                 ) : (
                   <div className="bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 rounded-3xl p-6 text-center transition-colors">
                     <AlertCircle className="w-10 h-10 text-accent/20 dark:text-white/20 mx-auto mb-2 transition-colors" />
-                    <p className="font-bold text-accent/40 dark:text-white/40 transition-colors">No one is being served right now.</p>
+                    <p className="font-bold text-accent/40 dark:text-white/40 transition-colors">{t("no_one_serving")}</p>
                     {waiting.length > 0 && (
                       <motion.button whileTap={{ scale: 0.96 }} onClick={callNext} className="mt-4 bg-primary text-white px-6 py-3 rounded-2xl font-bold text-sm">
-                        Call First in Queue
+                        {t("call_first")}
                       </motion.button>
                     )}
                   </div>
@@ -211,7 +213,7 @@ export default function AdminDashboard() {
                 {/* Waiting List - Hidden on Mobile Dashboard, visible heavily on Desktop grid */}
                 <div className="hidden md:block">
                   <h2 className="font-bold text-accent/50 dark:text-white/50 text-xs uppercase tracking-widest mb-3 transition-colors">
-                    Waiting List ({waiting.length})
+                    {t("waiting_list")} ({waiting.length})
                   </h2>
                   <div className="space-y-3">
                     <AnimatePresence>
@@ -230,7 +232,9 @@ export default function AdminDashboard() {
                           </div>
                           <div className="flex-1">
                             <p className="font-bold text-accent dark:text-white text-sm transition-colors">{ticket.user_name}</p>
-                            <p className="text-accent/40 dark:text-white/40 text-xs transition-colors">#{String(ticket.ticket_number).padStart(3, "0")} · ~{i * (queueInfo?.avg_service_time_min ?? 10)}m wait</p>
+                            <p className="text-accent/40 dark:text-white/40 text-xs transition-colors">
+                              #{String(ticket.ticket_number).padStart(3, "0")} · ~{i * (queueInfo?.avg_service_time_min ?? 10)}{t("min")} {t("waiting")}
+                            </p>
                           </div>
                           <button onClick={() => noShow(ticket.id)} className="w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-xl flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors">
                             <UserX className="w-4 h-4 text-rose-400" />
@@ -241,7 +245,7 @@ export default function AdminDashboard() {
                     {waiting.length === 0 && (
                       <div className="text-center py-10 text-accent/30 dark:text-white/30 transition-colors">
                         <Users className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                        <p className="font-bold">Queue is empty</p>
+                        <p className="font-bold">{t("queue_empty")}</p>
                       </div>
                     )}
                   </div>
@@ -256,7 +260,7 @@ export default function AdminDashboard() {
                 <motion.div key="queue" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 md:block">
                   <div className="md:hidden flex items-center justify-between mb-2">
                     <h2 className="font-bold text-accent/50 dark:text-white/50 transition-colors text-xs uppercase tracking-widest">
-                      Mobile Queue View ({waiting.length})
+                      {t("mobile_queue_view")} ({waiting.length})
                     </h2>
                   </div>
                   {/* Reuse identical list structure, or rely on layout hidden logic for desktop to save duplicate render */}
@@ -285,7 +289,7 @@ export default function AdminDashboard() {
                     {waiting.length === 0 && (
                       <div className="text-center py-10 text-accent/30">
                         <Users className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                        <p className="font-bold">Queue is empty</p>
+                        <p className="font-bold">{t("queue_empty")}</p>
                       </div>
                     )}
                   </div>
@@ -300,10 +304,10 @@ export default function AdminDashboard() {
                 {/* Stat cards — live data */}
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { label: "Served Today", value: analytics?.served_today ?? 0, icon: CheckCircle, color: "text-primary", bg: "bg-primary/10" },
-                    { label: "Avg Wait", value: `~${analytics?.avg_wait_min ?? 0}m`, icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
-                    { label: "No-Shows", value: analytics?.no_shows_today ?? 0, icon: UserX, color: "text-rose-500", bg: "bg-rose-50" },
-                    { label: "Total Queued", value: (analytics?.served_today ?? 0) + (analytics?.no_shows_today ?? 0), icon: TrendingUp, color: "text-sky-500", bg: "bg-sky-50" },
+                    { label: t("served_today"), value: analytics?.served_today ?? 0, icon: CheckCircle, color: "text-primary", bg: "bg-primary/10" },
+                    { label: t("avg_wait"), value: `~${analytics?.avg_wait_min ?? 0}${t("min")}`, icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
+                    { label: t("no_shows"), value: analytics?.no_shows_today ?? 0, icon: UserX, color: "text-rose-500", bg: "bg-rose-50" },
+                    { label: t("total_queued"), value: (analytics?.served_today ?? 0) + (analytics?.no_shows_today ?? 0), icon: TrendingUp, color: "text-sky-500", bg: "bg-sky-50" },
                   ].map(({ label, value, icon: Icon, color, bg }) => (
                     <div key={label} className="bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 rounded-3xl p-5 space-y-3 transition-colors">
                       <div className={`w-10 h-10 ${bg} rounded-2xl flex items-center justify-center`}>
@@ -319,7 +323,7 @@ export default function AdminDashboard() {
 
                 {/* Peak hours — live from hourly_distribution */}
                 <div className="bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 rounded-3xl p-5 transition-colors">
-                  <h3 className="font-bold text-accent dark:text-white mb-4 transition-colors">Peak Hours Today</h3>
+                  <h3 className="font-bold text-accent dark:text-white mb-4 transition-colors">{t("peak_hours")}</h3>
                   <div className="flex items-end gap-2 h-24">
                     {Array.from({ length: 8 }, (_, i) => i + 9).map((h, i) => {
                       const match = analytics?.hourly_distribution.find(hd => Number(hd.hour) === h);
@@ -350,7 +354,7 @@ export default function AdminDashboard() {
                     className="w-full bg-primary/10 dark:bg-primary/20 text-primary rounded-2xl py-4 font-bold text-sm flex items-center justify-center gap-2 transition-colors"
                   >
                     <BarChart3 className="w-4 h-4" />
-                    View Full Analytics Dashboard
+                    {t("view_analytics")}
                   </motion.div>
                 </Link>
               </motion.div>

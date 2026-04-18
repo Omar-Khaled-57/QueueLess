@@ -95,16 +95,16 @@ export type Notification = {
 };
 
 export type Business = {
-  id: number; owner_id: number; name: string;
-  description: string; category: string;
-  address: string; is_active: boolean; created_at: string;
+  id: number; owner_id: number; name: string; name_ar?: string;
+  description: string; description_ar?: string; category: string;
+  address: string; address_ar?: string; is_active: boolean; created_at: string;
   image_url?: string;
   operating_days: number[];
   owner_name?: string;
 };
 
 export type Queue = {
-  id: number; business_id: number; name: string;
+  id: number; business_id: number; name: string; name_ar?: string;
   is_open: boolean; avg_service_time_min: number; created_at: string;
 };
 

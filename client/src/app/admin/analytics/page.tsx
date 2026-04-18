@@ -58,10 +58,10 @@ export default function AnalyticsPage() {
   }
 
   const statCards = [
-    { label: "Served Today", value: analytics?.served_today ?? 0, icon: CheckCircle, color: "text-primary", bg: "bg-primary/10" },
-    { label: "Avg Wait", value: `~${analytics?.avg_wait_min ?? 0}m`, icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
-    { label: "No-Shows", value: analytics?.no_shows_today ?? 0, icon: UserX, color: "text-rose-500", bg: "bg-rose-50" },
-    { label: "Total Queued", value: (analytics?.served_today ?? 0) + (analytics?.no_shows_today ?? 0), icon: Users, color: "text-sky-500", bg: "bg-sky-50" },
+    { label: t("served_today"), value: analytics?.served_today ?? 0, icon: CheckCircle, color: "text-primary", bg: "bg-primary/10" },
+    { label: t("avg_wait"), value: `~${analytics?.avg_wait_min ?? 0}${t("min")}`, icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
+    { label: t("no_shows"), value: analytics?.no_shows_today ?? 0, icon: UserX, color: "text-rose-500", bg: "bg-rose-50" },
+    { label: t("total_queued"), value: (analytics?.served_today ?? 0) + (analytics?.no_shows_today ?? 0), icon: Users, color: "text-sky-500", bg: "bg-sky-50" },
   ];
 
   // Convert DB hourly data (0-23) to UI format
@@ -112,14 +112,16 @@ export default function AnalyticsPage() {
               <ArrowLeft className="w-5 h-5 text-white" />
             </Link>
             <div>
-              <h1 className="text-white text-2xl font-bold">Analytics</h1>
-              <p className="text-white/60 text-sm">{business?.name || "Business Dashboard"}</p>
+              <h1 className="text-white text-2xl font-bold">{t("analytics")}</h1>
+              <p className="text-white/60 text-sm">
+                {(locale === "ar" && business?.name_ar) ? business.name_ar : (business?.name || t("dashboard"))}
+              </p>
             </div>
           </div>
 
           {/* Period Toggle */}
           <div className="flex gap-2 mt-6 relative z-10">
-            {["Today", "This Week", "This Month"].map((p, i) => (
+            {[t("today"), t("this_week"), t("this_month")].map((p, i) => (
               <button
                 key={p}
                 className={`text-xs font-bold px-3 py-1.5 rounded-full transition-all ${i === 0 ? "bg-white text-secondary" : "bg-white/20 text-white/70"}`}
@@ -159,10 +161,10 @@ export default function AnalyticsPage() {
           {/* Peak Hours Chart */}
           <div className="bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 rounded-3xl p-5 transition-colors">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-accent dark:text-white transition-colors">Peak Hours</h3>
+              <h3 className="font-bold text-accent dark:text-white transition-colors">{t("peak_hours")}</h3>
               <div className="flex items-center gap-1 text-accent/40 text-xs font-bold">
                 <BarChart3 className="w-3.5 h-3.5" />
-                Patients / hour
+                {t("patients_per_hour")}
               </div>
             </div>
             <div className="flex items-end gap-2" style={{ height: "100px" }}>
@@ -187,16 +189,16 @@ export default function AnalyticsPage() {
               })}
             </div>
             <p className="text-accent/30 dark:text-white/30 text-xs text-center mt-2 font-medium transition-colors">
-              Peak at {peakHour.hour} with {peakHour.count} patients
+              {t("peak_hours")} — {peakHour.hour} ({peakHour.count} {t("customer")})
             </p>
           </div>
 
           <div className="bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 rounded-3xl p-5 transition-colors">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-bold text-accent dark:text-white transition-colors">This Week</h3>
+              <h3 className="font-bold text-accent dark:text-white transition-colors">{t("this_week")}</h3>
               <div className="flex items-center gap-3 text-xs font-bold">
-                <span className="flex items-center gap-1 text-primary"><span className="w-2 h-2 rounded-full bg-primary inline-block" />Served</span>
-                <span className="flex items-center gap-1 text-rose-400"><span className="w-2 h-2 rounded-full bg-rose-400 inline-block" />No-show</span>
+                <span className="flex items-center gap-1 text-primary"><span className="w-2 h-2 rounded-full bg-primary inline-block" />{t("served")}</span>
+                <span className="flex items-center gap-1 text-rose-400"><span className="w-2 h-2 rounded-full bg-rose-400 inline-block" />{t("no_shows")}</span>
               </div>
             </div>
             {weeklyData.length === 0 ? (
@@ -233,7 +235,7 @@ export default function AnalyticsPage() {
                   })}
                 </div>
                 <p className="text-accent/30 dark:text-white/30 text-xs text-center mt-2 font-medium transition-colors">
-                  {bestDay ? `Best day: ${bestDay.day} (${bestDay.served} served)` : "Collecting data…"}
+                  {bestDay ? `${t("best_day")}: ${bestDay.day} (${bestDay.served} ${t("served")})` : "Collecting data…"}
                 </p>
               </>
             )}
@@ -243,7 +245,7 @@ export default function AnalyticsPage() {
           <div className="bg-linear-to-br from-primary to-primary-light rounded-3xl p-6 text-white portrait:mb-20">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-white/70 text-xs font-bold uppercase tracking-widest">Queue Health Score</p>
+                <p className="text-white/70 text-xs font-bold uppercase tracking-widest">{t("health_score")}</p>
                 <p className="text-5xl font-black mt-2">{healthScore}<span className="text-2xl text-white/50">/100</span></p>
                 <p className="text-white/80 text-sm mt-1 font-medium">
                   {healthScore >= 85 ? "Great performance today 🎉" : healthScore >= 65 ? "Doing well, keep it up 👍" : "Needs attention today ⚠️"}
@@ -255,9 +257,9 @@ export default function AnalyticsPage() {
             </div>
             <div className="mt-5 space-y-2">
               {[
-                { label: "On-time service rate", pct: Math.min(100, onTimeRate) },
-                { label: "Customer satisfaction (est.)", pct: satisfactionEst },
-                { label: "No-show rate (lower = better)", pct: Math.max(0, 100 - noShowRate) },
+                { label: t("on_time_rate"), pct: Math.min(100, onTimeRate) },
+                { label: t("satisfaction_est"), pct: satisfactionEst },
+                { label: t("no_show_rate"), pct: Math.max(0, 100 - noShowRate) },
               ].map(({ label, pct }) => (
                 <div key={label}>
                   <div className="flex justify-between text-xs font-bold text-white/70 mb-1">

@@ -74,5 +74,31 @@
   "dark_mode": "Dark Mode",
 
   "edit_profile": "Edit Profile",
-  "account_section": "Account"
+  "account_section": "Account",
+  
+  "admin_panel": "Admin Panel",
+  "view_analytics": "View Analytics",
+  "served": "Served",
+  "call_next": "Call Next",
+  "skip": "Skip",
+  "no_one_serving": "No one is being served right now.",
+  "call_first": "Call First in Queue",
+  "waiting_list": "Waiting List",
+  "queue_empty": "Queue is empty",
+  "peak_hours": "Peak Hours",
+  "health_score": "Queue Health Score",
+  "on_time_rate": "On-time service rate",
+  "satisfaction_est": "Customer satisfaction (est.)",
+  "no_show_rate": "No-show rate",
+  "total_queued": "Total Queued",
+  "no_shows": "No-Shows",
+  "patients_per_hour": "Patients / hour",
+  "best_day": "Best day",
+  "queue_date": "Queue Date",
+  "notify_me": "Notify me 30 mins before",
+  "confirm_queue": "Confirm Queue for {date}",
+  "mobile_queue_view": "Mobile Queue View",
+  "today": "Today",
+  "this_week": "This Week",
+  "this_month": "This Month"
 }

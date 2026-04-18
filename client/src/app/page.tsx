@@ -56,7 +56,7 @@ export default function Home() {
       dir={dir}
     >
       {/* Language / Theme Toggle — always top-right regardless of dir */}
-      <div className="fixed top-6 right-6 z-50" style={{ right: "1.5rem", left: "auto" }}>
+      <div className="fixed top-6 right-6 z-50 [&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white" style={{ right: "1.5rem", left: "auto" }}>
         <ThemeLangToggle />
       </div>
 

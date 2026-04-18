@@ -74,5 +74,31 @@
   "dark_mode": "الوضع الداكن",
 
   "edit_profile": "تعديل الملف الشخصي",
-  "account_section": "الحساب"
+  "account_section": "الحساب",
+
+  "admin_panel": "لوحة المسؤول",
+  "view_analytics": "عرض الإحصائيات",
+  "served": "تم خدمتهم",
+  "call_next": "التالي",
+  "skip": "تخطي",
+  "no_one_serving": "لا يتم خدمة أحد حالياً.",
+  "call_first": "استدعاء الأول في الطابور",
+  "waiting_list": "قائمة الانتظار",
+  "queue_empty": "الطابور فارغ",
+  "peak_hours": "ساعات الذروة",
+  "health_score": "مؤشر صحة الطابور",
+  "on_time_rate": "معدل الخدمة في الوقت",
+  "satisfaction_est": "تقييم رضا العملاء",
+  "no_show_rate": "معدل الغياب",
+  "total_queued": "إجمالي المسجلين",
+  "no_shows": "حالات الغياب",
+  "patients_per_hour": "عميل / ساعة",
+  "best_day": "أفضل يوم",
+  "queue_date": "تاريخ الحجز",
+  "notify_me": "تنبيهي قبل ٣٠ دقيقة",
+  "confirm_queue": "تأكيد الحجز ليوم {date}",
+  "mobile_queue_view": "عرض الطابور للجوال",
+  "today": "اليوم",
+  "this_week": "هذا الأسبوع",
+  "this_month": "هذا الشهر"
 }

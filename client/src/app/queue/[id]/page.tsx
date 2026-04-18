@@ -28,7 +28,7 @@ export default function QueuePage() {
   const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [notify30Mins, setNotify30Mins] = useState(true);
   
-  const { dir } = useTranslation();
+  const { t, dir, locale } = useTranslation();
 
   const fetchState = async () => {
     if (!id) return;
@@ -134,17 +134,21 @@ export default function QueuePage() {
               <ArrowLeft className="w-5 h-5 text-white" />
             </Link>
             <div>
-              <h1 className="text-white text-xl font-bold">{business?.name}</h1>
-              <p className="text-white/70 text-sm">{queueInfo?.name || "Queue"}</p>
+              <h1 className="text-white text-xl font-bold">
+                {(locale === "ar" && business?.name_ar) ? business.name_ar : (business?.name || t("business"))}
+              </h1>
+              <p className="text-white/70 text-sm">
+                {(locale === "ar" && queueInfo?.name_ar) ? queueInfo.name_ar : (queueInfo?.name || t("live_queue"))}
+              </p>
             </div>
           </div>
 
           {/* Stats Row */}
           <div className="flex gap-3 mt-6 relative z-10">
             {[
-              { icon: Users, value: `${waiting.length}`, label: "Waiting" },
-              { icon: Clock, value: queueInfo ? `~${queueInfo.avg_service_time_min}m` : "-", label: "Avg Wait" },
-              { icon: CheckCircle, value: "-", label: "Served Today" },
+              { icon: Users, value: `${waiting.length}`, label: t("waiting") },
+              { icon: Clock, value: queueInfo ? `~${queueInfo.avg_service_time_min}${t("min")}` : "-", label: t("avg_wait") },
+              { icon: CheckCircle, value: "-", label: t("served_today") },
             ].map(({ icon: Icon, value, label }) => (
               <div key={label} className="flex-1 bg-white/20 backdrop-blur rounded-2xl p-3 text-center">
                 <Icon className="w-4 h-4 text-white/70 mx-auto mb-1" />
@@ -168,7 +172,7 @@ export default function QueuePage() {
               className="bg-white dark:bg-[#1a1a1a] rounded-3xl p-5 border border-primary/5 shadow-sm space-y-5"
             >
               <div>
-                <h2 className="font-bold text-accent/60 dark:text-white/60 text-xs uppercase tracking-widest mb-2">Queue Date</h2>
+                <h2 className="font-bold text-accent/60 dark:text-white/60 text-xs uppercase tracking-widest mb-2">{t("queue_date")}</h2>
                 <input 
                   type="date" 
                   value={selectedDate}
@@ -187,8 +191,8 @@ export default function QueuePage() {
 
               <div className="flex items-center justify-between pt-3 border-t border-black/5 dark:border-white/5">
                 <div>
-                  <h3 className="font-bold text-accent dark:text-white text-sm">Notify me 30 mins before</h3>
-                  <p className="text-accent/60 dark:text-white/60 text-xs mt-0.5">We'll alert you via push notification.</p>
+                  <h3 className="font-bold text-accent dark:text-white text-sm">{t("notify_me")}</h3>
+                  <p className="text-accent/60 dark:text-white/60 text-xs mt-0.5">{t("push_notifications")}</p>
                 </div>
                 <button
                   onClick={() => setNotify30Mins(!notify30Mins)}
@@ -209,7 +213,7 @@ export default function QueuePage() {
             >
               <div className="flex items-center gap-2 mb-3">
                 <span className="w-2.5 h-2.5 bg-sun rounded-full animate-pulse" />
-                <span className="text-white/80 text-xs font-bold uppercase tracking-wider">Now Serving</span>
+                <span className="text-white/80 text-xs font-bold uppercase tracking-wider">{t("now_serving")}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div>
@@ -230,16 +234,16 @@ export default function QueuePage() {
             >
               <div className="flex items-center gap-2 mb-3">
                 <Zap className="w-4 h-4 text-sun" />
-                <span className="text-accent/60 text-xs font-bold uppercase tracking-wider">Your Ticket</span>
+                <span className="text-accent/60 text-xs font-bold uppercase tracking-wider">{t("your_ticket")}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-4xl font-black text-accent">#{String(myTicket.ticket_number).padStart(3, "0")}</p>
-                  <p className="text-accent/60 font-medium mt-1">Position #{myPosition} in queue</p>
+                  <p className="text-accent/60 font-medium mt-1">{t("position_in_queue", { position: myPosition })}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-black text-primary">~{(myPosition - 1) * (queueInfo?.avg_service_time_min || 10)}m</p>
-                  <p className="text-accent/40 text-xs font-bold">est. wait</p>
+                  <p className="text-2xl font-black text-primary">~{(myPosition - 1) * (queueInfo?.avg_service_time_min || 10)}{t("min")}</p>
+                  <p className="text-accent/40 text-xs font-bold">{t("est_wait")}</p>
                 </div>
               </div>
             </motion.div>
@@ -248,7 +252,7 @@ export default function QueuePage() {
 
           {/* Queue List */}
           <div>
-            <h2 className="font-bold text-accent/60 text-xs uppercase tracking-widest mb-4">Queue List</h2>
+            <h2 className="font-bold text-accent/60 text-xs uppercase tracking-widest mb-4">{t("queue_list")}</h2>
             <div className="space-y-3">
               {waiting.map((ticket, i) => {
                 const isMe = user && ticket.user_id === user.id;
@@ -283,9 +287,9 @@ export default function QueuePage() {
                   </div>
                   <div className="text-right">
                     {ticket.status === "serving" ? (
-                      <span className="text-primary text-xs font-black uppercase">Serving</span>
+                      <span className="text-primary text-xs font-black uppercase">{t("now_serving")}</span>
                     ) : (
-                      <span className="text-accent/30 text-xs font-bold">~{i * (queueInfo?.avg_service_time_min || 10)}m</span>
+                      <span className="text-accent/30 text-xs font-bold">~{i * (queueInfo?.avg_service_time_min || 10)}{t("min")}</span>
                     )}
                   </div>
                 </motion.div>
@@ -307,7 +311,7 @@ export default function QueuePage() {
                 className="w-full max-w-7xl mx-auto block bg-primary text-white py-5 rounded-2xl font-black text-lg shadow-xl shadow-primary/30 ring-4 ring-primary/10 disabled:opacity-60 transition-all hover:bg-primary/95"
               >
                 <div className="flex items-center justify-center gap-3">
-                  {joining ? "Joining..." : `Confirm Queue for ${new Date(selectedDate).toLocaleDateString()}`}
+                  {joining ? t("joining") : t("confirm_queue", { date: new Date(selectedDate).toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US") })}
                   {!joining && <Users className="w-5 h-5" />}
                 </div>
               </motion.button>
@@ -319,7 +323,7 @@ export default function QueuePage() {
                   className="w-full bg-cream text-accent/60 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 border-2 border-transparent hover:border-accent/10 transition-all cursor-pointer"
                 >
                   <CheckCircle className="w-5 h-5" />
-                  View Ticket
+                  {t("view_ticket")}
                 </motion.button>
               </Link>
               <motion.button
@@ -328,7 +332,7 @@ export default function QueuePage() {
                 className="flex-1 bg-rose-50 text-rose-500 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 border-2 border-rose-100 hover:bg-rose-100 transition-all"
               >
                 <XCircle className="w-5 h-5" />
-                Cancel
+                {t("cancel")}
               </motion.button>
             </div>
           )}
