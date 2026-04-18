@@ -1,0 +1,34 @@
+# QueueLess Mock Users
+
+All mock accounts listed below share the same default password:
+Password: password123
+
+## Business Administrators (Access to /admin)
+These accounts own simulated businesses and can actively control queue pacing:
+
+1. Uncle Johnny
+   Email: abu@koshary.com
+   Business: Big Koshary Time!
+
+2. John Rabbit
+   Email: rabie@clinic.com
+   Business: Dr. Rabbioid Clinic
+
+3. Jouhn Zenin
+   Email: afaf@mogamma.gov.eg
+   Business: The Bureau of Stamps
+
+## Regular Customers (Access to /dashboard)
+These accounts can browse queues, schedule tickets natively, and view historical metrics:
+
+1. Panda Man
+   Email: bassem@user.com
+
+2. John Man
+   Email: helmy@user.com
+
+3. Johnny Appleseed
+   Email: mona@user.com
+
+4. Sir John Doe
+   Email: mo@user.com

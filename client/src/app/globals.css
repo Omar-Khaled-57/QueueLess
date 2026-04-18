@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/* Tell Tailwind v4 to use the .dark class on <html> for dark: variants */
+@variant dark (&:where(.dark, .dark *));
+
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-cairo: var(--font-cairo);
+
+  /* QueueLess Custom Palette - Mapped to variables for theme responsiveness */
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-cream: var(--cream);
+  --color-sun: var(--sun);
+  --radius-xl: 2rem;
+  --radius-2xl: 3rem;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1A1A1A;
+  --primary: #E84A97;
+  --primary-light: #f44298;
+  --primary-dark: #B52D6B;
+  --secondary: #8B1D4B;
+  --accent: #1A1A1A;
+  --cream: #FFF5F9;
+  --sun: #FFD23F;
+}
+
+.dark {
+  --background: #0f0f0f;
+  --foreground: #FFF5F9;
+  --primary: #D13B82;
+  --primary-dark: #A3275F;
+  --secondary: #FF66A3;
+  --accent: #FDFDFD;
+  --cream: #1A1A1A;
+  --sun: #FFB300;
+}
+
+
+body {
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Arabic RTL — use Cairo font */
+[dir='rtl'] body,
+[dir='rtl'] {
+  font-family: var(--font-cairo), 'Cairo', system-ui, Arial, sans-serif;
+}
+
+/* Custom Utilities */
+.glass-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.arch-header {
+  border-bottom-left-radius: 4rem;
+  border-bottom-right-radius: 4rem;
+}
+
