@@ -16,7 +16,7 @@ import ThemeLangToggle from "@/components/ThemeLangToggle";
 
 export default function AnalyticsPage() {
   const { user, token } = useAuth();
-  const { t, dir } = useTranslation();
+  const { t, dir, locale } = useTranslation();
   
   const [business, setBusiness] = useState<Business | null>(null);
   const [queueInfo, setQueueInfo] = useState<Queue | null>(null);

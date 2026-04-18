@@ -22,7 +22,7 @@ const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
 export default function AdminDashboard() {
   const { user, token } = useAuth();
-  const { t, dir } = useTranslation();
+  const { t, dir, locale } = useTranslation();
   const [view, setView] = useState<View>("dashboard");
   
   const [business, setBusiness] = useState<Business | null>(null);
