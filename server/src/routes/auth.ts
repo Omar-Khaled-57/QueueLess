@@ -95,11 +95,14 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const { data: profile } = await supabaseAdmin
+    const sessionUserId = session!.user.id;
+    const { data: profile, error: profileQueryError } = await supabaseAdmin
       .from('users')
       .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
-      .eq('supabase_id', session!.user.id)
+      .eq('supabase_id', sessionUserId)
       .single();
+
+    console.log('LOGIN DEBUG: sessionUserId=%s profileQueryError=%s profile=%j', sessionUserId, profileQueryError?.message, profile);
 
     if (!profile) {
       res.status(404).json({ error: 'User profile not found' });
