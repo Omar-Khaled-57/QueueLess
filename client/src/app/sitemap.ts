@@ -1,8 +1,8 @@
 import { MetadataRoute } from 'next';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://queueless.vercel.app'; // Replace with actual domain
+const baseUrl = 'https://queue-less-nu.vercel.app';
 
+export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
       url: baseUrl,
@@ -25,8 +25,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}/dashboard`,
       lastModified: new Date(),
-      changeFrequency: 'always',
-      priority: 0.5,
+      changeFrequency: 'daily',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/home`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.7,
     },
   ];
 }
