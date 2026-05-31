@@ -43,93 +43,9 @@ async function seed() {
 }
 
 async function installSqlFunctions() {
-  const functions = [
-    {
-      name: 'call_next_ticket',
-      sql: `
-        CREATE OR REPLACE FUNCTION call_next_ticket(p_queue_id INT, p_target_date DATE)
-        RETURNS SETOF tickets AS $$
-        DECLARE
-          next_ticket tickets%ROWTYPE;
-        BEGIN
-          UPDATE tickets SET status = 'serving', called_at = NOW()
-          WHERE id = (
-            SELECT id FROM tickets
-            WHERE queue_id = p_queue_id AND status = 'waiting' AND target_date = p_target_date
-            ORDER BY ticket_number LIMIT 1
-          )
-          RETURNING * INTO next_ticket;
-          RETURN NEXT next_ticket;
-        END;
-        $$ LANGUAGE plpgsql SECURITY DEFINER;
-      `,
-    },
-    {
-      name: 'get_weekly_analytics',
-      sql: `
-        CREATE OR REPLACE FUNCTION get_weekly_analytics(p_queue_id INT)
-        RETURNS TABLE(day TEXT, served BIGINT, noshow BIGINT) AS $$
-        BEGIN
-          RETURN QUERY
-          SELECT
-            TO_CHAR(d::DATE, 'Dy') AS day,
-            COUNT(*) FILTER (WHERE t.status = 'done')::BIGINT AS served,
-            COUNT(*) FILTER (WHERE t.status = 'skipped')::BIGINT AS noshow
-          FROM generate_series(CURRENT_DATE - 6, CURRENT_DATE, '1 day') AS d
-          LEFT JOIN tickets t ON t.queue_id = p_queue_id
-            AND COALESCE(t.completed_at::date, t.target_date) = d::date
-          GROUP BY d
-          ORDER BY d;
-        END;
-        $$ LANGUAGE plpgsql SECURITY DEFINER;
-      `,
-    },
-    {
-      name: 'get_avg_wait_min',
-      sql: `
-        CREATE OR REPLACE FUNCTION get_avg_wait_min(p_queue_id INT)
-        RETURNS TABLE(avg_min NUMERIC) AS $$
-        BEGIN
-          RETURN QUERY
-          SELECT ROUND(AVG(EXTRACT(EPOCH FROM (called_at - joined_at))/60))::NUMERIC AS avg_min
-          FROM tickets
-          WHERE queue_id = p_queue_id AND called_at IS NOT NULL
-            AND DATE(joined_at) = CURRENT_DATE;
-        END;
-        $$ LANGUAGE plpgsql SECURITY DEFINER;
-      `,
-    },
-    {
-      name: 'get_hourly_distribution',
-      sql: `
-        CREATE OR REPLACE FUNCTION get_hourly_distribution(p_queue_id INT)
-        RETURNS TABLE(hour DOUBLE PRECISION, count BIGINT) AS $$
-        BEGIN
-          RETURN QUERY
-          SELECT EXTRACT(HOUR FROM joined_at) AS hour, COUNT(*)::BIGINT AS count
-          FROM tickets
-          WHERE queue_id = p_queue_id AND DATE(joined_at) = CURRENT_DATE
-          GROUP BY hour
-          ORDER BY hour;
-        END;
-        $$ LANGUAGE plpgsql SECURITY DEFINER;
-      `,
-    },
-  ];
-
-  for (const fn of functions) {
-    const { error } = await supabase.rpc('exec_sql', {
-      query_text: fn.sql,
-      query_params: '[]',
-    });
-    if (error) {
-      console.warn(`  ⚠️  Could not install ${fn.name}: ${error.message}`);
-      console.log('  ℹ️  You may need to run the SQL manually in Supabase SQL Editor.');
-      console.log(`     See server/db/migrations/000_${fn.name}.sql`);
-    } else {
-      console.log(`  ✅ Installed ${fn.name}`);
-    }
-  }
+  console.log('  ℹ️  Please run the migration SQL file in your Supabase SQL Editor:');
+  console.log('     → server/db/migrations/001_supabase_schema.sql');
+  console.log('     This installs required helper functions (call_next_ticket, weekly analytics, etc.)');
 }
 
 async function createUsers() {
@@ -158,7 +74,52 @@ async function createUsers() {
 
   const createdUsers: Array<{ id: number; name: string; email: string; role: string }> = [];
 
+  // Pre-fetch existing auth users and profiles to avoid redundant API calls
+  const { data: { users: allAuthUsers } } = await supabase.auth.admin.listUsers();
+  const existingProfilesResult = await supabase.from('users').select('id, email, role, name');
+  const existingByEmail: Record<string, { id: number; name: string; email: string; role: string }> = {};
+  for (const p of existingProfilesResult.data || []) {
+    existingByEmail[p.email] = p;
+  }
+
   for (const u of userData) {
+    // If profile already exists, use it
+    if (existingByEmail[u.email]) {
+      createdUsers.push(existingByEmail[u.email]);
+      console.log(`  ℹ️  ${u.email} already exists (id=${existingByEmail[u.email].id})`);
+      continue;
+    }
+
+    // Find auth user by email
+    const authUser = allAuthUsers?.find(au => au.email === u.email);
+
+    if (authUser) {
+      // Auth exists but profile is missing — create profile
+      const { data: profile, error: pe } = await supabase
+        .from('users')
+        .insert({
+          supabase_id: authUser.id,
+          name: u.name,
+          email: u.email,
+          role: u.role,
+          phone: u.phone,
+          city: u.city,
+          address: u.address,
+          gender: u.gender,
+        })
+        .select('id, name, email, role')
+        .single();
+
+      if (!pe && profile) {
+        createdUsers.push(profile);
+        console.log(`  ✅ Recovered profile for ${u.email} (id=${profile.id})`);
+      } else {
+        console.error(`  ❌ Could not create profile for ${u.email}: ${pe?.message}`);
+      }
+      continue;
+    }
+
+    // Neither auth nor profile — create both
     const { error: authError } = await supabase.auth.admin.createUser({
       email: u.email,
       password: u.password,
@@ -167,26 +128,41 @@ async function createUsers() {
     });
 
     if (authError) {
-      if (authError.message.includes('already registered')) {
-        const { data: existing } = await supabase
+      // Double-check if it was created despite the error
+      const { data: { users: refreshed } } = await supabase.auth.admin.listUsers();
+      const newAuthUser = refreshed?.find(au => au.email === u.email);
+      if (newAuthUser) {
+        const { data: profile, error: pe } = await supabase
           .from('users')
+          .insert({
+            supabase_id: newAuthUser.id,
+            name: u.name,
+            email: u.email,
+            role: u.role,
+            phone: u.phone,
+            city: u.city,
+            address: u.address,
+            gender: u.gender,
+          })
           .select('id, name, email, role')
-          .eq('email', u.email)
           .single();
 
-        if (existing) {
-          createdUsers.push(existing);
-          console.log(`  ℹ️  ${u.email} already exists (id=${existing.id})`);
+        if (!pe && profile) {
+          createdUsers.push(profile);
+          console.log(`  ✅ Created ${u.role}: ${u.name} (${u.email}) after retry`);
+        } else {
+          console.error(`  ❌ Auth exists but profile failed for ${u.email}: ${pe?.message}`);
         }
-        continue;
+      } else {
+        console.error(`  ❌ Failed to create ${u.email}: ${authError.message}`);
       }
-      console.error(`  ❌ Failed to create ${u.email}: ${authError.message}`);
       continue;
     }
 
-    const { data: authUser } = await supabase.auth.admin.listUsers();
-    const matched = authUser?.users.find(au => au.email === u.email);
-    if (!matched) {
+    // Successfully created in Auth — fetch and create profile
+    const { data: { users: refreshed } } = await supabase.auth.admin.listUsers();
+    const newUser = refreshed?.find(au => au.email === u.email);
+    if (!newUser) {
       console.error(`  ❌ Could not find newly created user: ${u.email}`);
       continue;
     }
@@ -194,7 +170,7 @@ async function createUsers() {
     const { data: profile, error: profileError } = await supabase
       .from('users')
       .insert({
-        supabase_id: matched.id,
+        supabase_id: newUser.id,
         name: u.name,
         email: u.email,
         role: u.role,
