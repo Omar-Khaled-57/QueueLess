@@ -96,13 +96,16 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     }
 
     const sessionUserId = session!.user.id;
+    console.log('LOGIN DEBUG: sessionUserId=%s', sessionUserId);
+
+    // Try with maybeSingle first to avoid coercion error
     const { data: profile, error: profileQueryError } = await supabaseAdmin
       .from('users')
-      .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
+      .select('id, name, email, role')
       .eq('supabase_id', sessionUserId)
-      .single();
+      .maybeSingle();
 
-    console.log('LOGIN DEBUG: sessionUserId=%s profileQueryError=%s profile=%j', sessionUserId, profileQueryError?.message, profile);
+    console.log('LOGIN DEBUG: profileQueryError=%s profile=%j', profileQueryError?.message, profile);
 
     if (!profile) {
       res.status(404).json({ error: 'User profile not found' });
