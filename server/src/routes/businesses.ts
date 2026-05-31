@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { query } from '../../db/pool';
+import { supabaseAdmin } from '../lib/supabase';
 import { authenticate, requireAdmin } from '../middleware/auth';
 
 const router = Router();
@@ -7,14 +7,21 @@ const router = Router();
 // GET /api/businesses — list all active businesses (public)
 router.get('/', async (_req: Request, res: Response): Promise<void> => {
   try {
-    const result = await query(
-      `SELECT b.*, u.name AS owner_name
-       FROM businesses b
-       JOIN users u ON u.id = b.owner_id
-       WHERE b.is_active = true
-       ORDER BY b.created_at DESC`
-    );
-    res.json({ businesses: result.rows });
+    const { data: businesses, error } = await supabaseAdmin
+      .from('businesses')
+      .select('*, users!inner(name)')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const mapped = (businesses || []).map((b: Record<string, unknown>) => ({
+      ...b,
+      owner_name: (b.users as Record<string, unknown>)?.name || null,
+      users: undefined,
+    }));
+
+    res.json({ businesses: mapped });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
@@ -25,14 +32,27 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const bizRes = await query('SELECT * FROM businesses WHERE id = $1', [id]);
-    if (!bizRes.rows[0]) { res.status(404).json({ error: 'Business not found' }); return; }
 
-    const queuesRes = await query(
-      'SELECT * FROM queues WHERE business_id = $1 ORDER BY created_at',
-      [id]
-    );
-    res.json({ business: bizRes.rows[0], queues: queuesRes.rows });
+    const { data: business, error: bizError } = await supabaseAdmin
+      .from('businesses')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (bizError || !business) {
+      res.status(404).json({ error: 'Business not found' });
+      return;
+    }
+
+    const { data: queues, error: qError } = await supabaseAdmin
+      .from('queues')
+      .select('*')
+      .eq('business_id', id)
+      .order('created_at', { ascending: true });
+
+    if (qError) throw qError;
+
+    res.json({ business, queues: queues || [] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
@@ -42,14 +62,29 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
 // POST /api/businesses — create a business (admin only)
 router.post('/', authenticate, requireAdmin, async (req: Request, res: Response): Promise<void> => {
   const { name, description, category, address, image_url } = req.body;
-  if (!name) { res.status(400).json({ error: 'Business name is required' }); return; }
+
+  if (!name) {
+    res.status(400).json({ error: 'Business name is required' });
+    return;
+  }
 
   try {
-    const result = await query(
-      'INSERT INTO businesses (owner_id, name, description, category, address, image_url) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *',
-      [req.user!.userId, name, description, category || 'general', address, image_url]
-    );
-    res.status(201).json({ business: result.rows[0] });
+    const { data: business, error } = await supabaseAdmin
+      .from('businesses')
+      .insert({
+        owner_id: req.user!.userId,
+        name,
+        description: description || null,
+        category: category || 'general',
+        address: address || null,
+        image_url: image_url || null,
+      })
+      .select('*')
+      .single();
+
+    if (error) throw error;
+
+    res.status(201).json({ business });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
@@ -62,24 +97,36 @@ router.patch('/:id', authenticate, requireAdmin, async (req: Request, res: Respo
   const { name, description, category, address, image_url, is_active } = req.body;
 
   try {
-    const owned = await query(
-      'SELECT id FROM businesses WHERE id = $1 AND owner_id = $2',
-      [id, req.user!.userId]
-    );
-    if (!owned.rows[0]) { res.status(403).json({ error: 'Not your business' }); return; }
+    const { data: owned } = await supabaseAdmin
+      .from('businesses')
+      .select('id')
+      .eq('id', id)
+      .eq('owner_id', req.user!.userId)
+      .single();
 
-    const result = await query(
-      `UPDATE businesses SET
-        name = COALESCE($1, name),
-        description = COALESCE($2, description),
-        category = COALESCE($3, category),
-        address = COALESCE($4, address),
-        image_url = COALESCE($5, image_url),
-        is_active = COALESCE($6, is_active)
-       WHERE id = $7 RETURNING *`,
-      [name, description, category, address, image_url, is_active, id]
-    );
-    res.json({ business: result.rows[0] });
+    if (!owned) {
+      res.status(403).json({ error: 'Not your business' });
+      return;
+    }
+
+    const updateFields: Record<string, unknown> = {};
+    if (name !== undefined) updateFields.name = name;
+    if (description !== undefined) updateFields.description = description;
+    if (category !== undefined) updateFields.category = category;
+    if (address !== undefined) updateFields.address = address;
+    if (image_url !== undefined) updateFields.image_url = image_url;
+    if (is_active !== undefined) updateFields.is_active = is_active;
+
+    const { data: business, error } = await supabaseAdmin
+      .from('businesses')
+      .update(updateFields)
+      .eq('id', id)
+      .select('*')
+      .single();
+
+    if (error) throw error;
+
+    res.json({ business });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });

@@ -1,16 +1,8 @@
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
+// PostgreSQL connection is now handled by Supabase client.
+// Import `supabaseAdmin` from '../src/lib/supabase' for all database operations.
+//
+// Usage:
+//   import { supabaseAdmin } from '../src/lib/supabase';
+//   const { data, error } = await supabaseAdmin.from('table').select('*');
 
-dotenv.config();
-
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-});
-
-pool.on('error', (err) => {
-  console.error('Unexpected PostgreSQL client error:', err);
-  process.exit(-1);
-});
-
-export const query = (text: string, params?: unknown[]) => pool.query(text, params);
+export {};

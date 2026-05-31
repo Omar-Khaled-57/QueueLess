@@ -28,6 +28,7 @@ yarn-error.log*
 # IDE
 .idea/
 .vscode/
+temp/
 
 # Build artifacts
 dist/

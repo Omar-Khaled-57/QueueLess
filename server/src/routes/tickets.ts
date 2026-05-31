@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { query } from '../../db/pool';
+import { supabaseAdmin } from '../lib/supabase';
 import { authenticate } from '../middleware/auth';
 
 const router = Router();
@@ -7,16 +7,28 @@ const router = Router();
 // GET /api/tickets/my — get the current user's ticket history
 router.get('/my', authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await query(
-      `SELECT t.*, q.name AS queue_name, b.name AS business_name, b.category
-       FROM tickets t
-       JOIN queues q ON q.id = t.queue_id
-       JOIN businesses b ON b.id = q.business_id
-       WHERE t.user_id = $1
-       ORDER BY t.joined_at DESC`,
-      [req.user!.userId]
-    );
-    res.json({ tickets: result.rows });
+    const { data: tickets, error } = await supabaseAdmin
+      .from('tickets')
+      .select(`
+        *,
+        queues!inner(name),
+        businesses!inner(name, category)
+      `)
+      .eq('user_id', req.user!.userId)
+      .order('joined_at', { ascending: false });
+
+    if (error) throw error;
+
+    const mapped = (tickets || []).map((t: Record<string, unknown>) => ({
+      ...t,
+      queue_name: (t.queues as Record<string, unknown>)?.name || null,
+      business_name: (t.businesses as Record<string, unknown>)?.name || null,
+      category: (t.businesses as Record<string, unknown>)?.category || null,
+      queues: undefined,
+      businesses: undefined,
+    }));
+
+    res.json({ tickets: mapped });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
@@ -26,22 +38,48 @@ router.get('/my', authenticate, async (req: Request, res: Response): Promise<voi
 // GET /api/tickets/my/active — get current user's active ticket (if any)
 router.get('/my/active', authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await query(
-      `SELECT t.*, q.name AS queue_name, b.name AS business_name,
-              b.category, b.address,
-              (SELECT COUNT(*) FROM tickets t2
-               WHERE t2.queue_id = t.queue_id
-               AND t2.status = 'waiting'
-               AND t2.ticket_number < t.ticket_number) AS position_ahead
-       FROM tickets t
-       JOIN queues q ON q.id = t.queue_id
-       JOIN businesses b ON b.id = q.business_id
-       WHERE t.user_id = $1 AND t.status IN ('waiting','serving')
-       ORDER BY t.joined_at DESC
-       LIMIT 1`,
-      [req.user!.userId]
-    );
-    res.json({ ticket: result.rows[0] ?? null });
+    const { data: tickets, error } = await supabaseAdmin
+      .from('tickets')
+      .select(`
+        *,
+        queues!inner(name),
+        businesses!inner(name, category, address)
+      `)
+      .eq('user_id', req.user!.userId)
+      .in('status', ['waiting', 'serving'])
+      .order('joined_at', { ascending: false })
+      .limit(1);
+
+    if (error) throw error;
+
+    if (!tickets || tickets.length === 0) {
+      res.json({ ticket: null });
+      return;
+    }
+
+    const t = tickets[0] as Record<string, unknown>;
+    const queueId = t.queue_id as number;
+    const ticketNumber = t.ticket_number as number;
+
+    const { count: positionAhead } = await supabaseAdmin
+      .from('tickets')
+      .select('id', { count: 'exact', head: true })
+      .eq('queue_id', queueId)
+      .eq('status', 'waiting')
+      .lt('ticket_number', ticketNumber);
+
+    const mapped = {
+      ...t,
+      queue_name: (t.queues as Record<string, unknown>)?.name || null,
+      business_name: (t.businesses as Record<string, unknown>)?.name || null,
+      category: (t.businesses as Record<string, unknown>)?.category || null,
+      address: (t.businesses as Record<string, unknown>)?.address || null,
+      position_ahead: positionAhead ?? 0,
+      queues: undefined,
+      businesses: undefined,
+    };
+
+    res.json({ ticket: mapped });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });

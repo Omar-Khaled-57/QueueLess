@@ -11,12 +11,14 @@ async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T>
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
   const res = await fetch(`${BASE}${path}`, { ...init, headers });
+
+  if (res.status === 204) return {} as T;
+
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'API error');
   return data as T;
 }
 
-// ── Auth ──────────────────────────────────────────────────
 export const authAPI = {
   register: (body: { name: string; email: string; password: string; role?: string; phone?: string; city?: string; address?: string; gender?: string }) =>
     apiFetch<{ user: User; token: string }>('/api/auth/register', { method: 'POST', body: JSON.stringify(body) }),
@@ -31,19 +33,17 @@ export const authAPI = {
     apiFetch<{ user: User }>('/api/auth/me', { method: 'PATCH', body: JSON.stringify(body), token }),
 };
 
-// ── Businesses ────────────────────────────────────────────
 export const businessAPI = {
   list: () => apiFetch<{ businesses: Business[] }>('/api/businesses'),
   get: (id: number) => apiFetch<{ business: Business; queues: Queue[] }>(`/api/businesses/${id}`),
 };
 
-// ── Queues ────────────────────────────────────────────────
 export const queueAPI = {
-  tickets: (queueId: number, date?: string) => 
+  tickets: (queueId: number, date?: string) =>
     apiFetch<{ tickets: Ticket[] }>(`/api/queues/${queueId}/tickets${date ? `?date=${date}` : ''}`),
   join: (queueId: number, targetDate: string, notifySettings: number[], token: string) =>
-    apiFetch<{ ticket: Ticket }>(`/api/queues/${queueId}/join`, { 
-      method: 'POST', 
+    apiFetch<{ ticket: Ticket }>(`/api/queues/${queueId}/join`, {
+      method: 'POST',
       token,
       body: JSON.stringify({ targetDate, notifySettings })
     }),
@@ -63,17 +63,15 @@ export const queueAPI = {
     apiFetch<{ queue: Queue }>('/api/queues', { method: 'POST', token, body: JSON.stringify(body) }),
 };
 
-// ── Tickets ───────────────────────────────────────────────
 export const ticketAPI = {
   myHistory: (token: string) => apiFetch<{ tickets: Ticket[] }>('/api/tickets/my', { token }),
   myActive: (token: string) => apiFetch<{ ticket: Ticket | null }>('/api/tickets/my/active', { token }),
 };
 
-// ── Notifications ─────────────────────────────────────────
 export const notificationsAPI = {
-  getAll: (token: string) => 
+  getAll: (token: string) =>
     apiFetch<{ notifications: Notification[] }>('/api/notifications', { token }),
-    
+
   getUnreadCount: (token: string) =>
     apiFetch<{ unread_count: number }>('/api/notifications/unread-count', { token }),
 
@@ -81,10 +79,9 @@ export const notificationsAPI = {
     apiFetch<{ notification: Notification }>(`/api/notifications/${id}/read`, { method: 'PATCH', token }),
 };
 
-// ── Types ─────────────────────────────────────────────────
 export type User = {
   id: number; name: string; email: string;
-  role: 'user' | 'admin'; avatar_url?: string; 
+  role: 'user' | 'admin'; avatar_url?: string;
   phone?: string; city?: string; address?: string; gender?: string;
   created_at: string;
 };

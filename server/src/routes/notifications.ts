@@ -1,55 +1,64 @@
 import { Router, Request, Response } from 'express';
-import { query } from '../../db/pool';
+import { supabaseAdmin } from '../lib/supabase';
 import { authenticate } from '../middleware/auth';
 
 const router = Router();
 
-// GET /api/notifications
-// Fetch all notifications for the current user
+// GET /api/notifications — fetch all notifications for the current user
 router.get('/', authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await query(
-      'SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC',
-      [req.user!.userId]
-    );
-    res.json({ notifications: result.rows });
+    const { data: notifications, error } = await supabaseAdmin
+      .from('notifications')
+      .select('*')
+      .eq('user_id', req.user!.userId)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    res.json({ notifications: notifications || [] });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// GET /api/notifications/unread-count
-// Fetch the count of unread notifications
+// GET /api/notifications/unread-count — fetch the count of unread notifications
 router.get('/unread-count', authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
-    const result = await query(
-      'SELECT COUNT(*) AS count FROM notifications WHERE user_id = $1 AND is_read = false',
-      [req.user!.userId]
-    );
-    res.json({ unread_count: Number(result.rows[0].count) });
+    const { count, error } = await supabaseAdmin
+      .from('notifications')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', req.user!.userId)
+      .eq('is_read', false);
+
+    if (error) throw error;
+
+    res.json({ unread_count: count ?? 0 });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-// PATCH /api/notifications/:id/read
-// Mark a notification as read
+// PATCH /api/notifications/:id/read — mark a notification as read
 router.patch('/:id/read', authenticate, async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const result = await query(
-      'UPDATE notifications SET is_read = true WHERE id = $1 AND user_id = $2 RETURNING *',
-      [id, req.user!.userId]
-    );
 
-    if (!result.rows[0]) {
+    const { data: notification, error } = await supabaseAdmin
+      .from('notifications')
+      .update({ is_read: true })
+      .eq('id', id)
+      .eq('user_id', req.user!.userId)
+      .select('*')
+      .single();
+
+    if (error || !notification) {
       res.status(404).json({ error: 'Notification not found' });
       return;
     }
 
-    res.json({ notification: result.rows[0] });
+    res.json({ notification });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });

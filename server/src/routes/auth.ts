@@ -1,7 +1,5 @@
 import { Router, Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { query } from '../../db/pool';
+import { supabaseAdmin } from '../lib/supabase';
 
 const router = Router();
 
@@ -20,28 +18,59 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
-    const existing = await query('SELECT id FROM users WHERE email = $1', [email]);
-    if (existing.rows.length > 0) {
-      res.status(409).json({ error: 'Email already registered' });
+    const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { name, role },
+    });
+
+    if (authError) {
+      if (authError.message.includes('already registered')) {
+        res.status(409).json({ error: 'Email already registered' });
+        return;
+      }
+      throw authError;
+    }
+
+    if (!authData.user) {
+      res.status(500).json({ error: 'Failed to create user' });
       return;
     }
 
-    const password_hash = await bcrypt.hash(password, 12);
-    const result = await query(
-      'INSERT INTO users (name, email, password_hash, role, phone, city, address, gender) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name, email, role, avatar_url, phone, city, address, gender, created_at',
-      [name, email, password_hash, role, phone, city, address, gender]
-    );
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from('users')
+      .insert({
+        supabase_id: authData.user.id,
+        name,
+        email,
+        role,
+        phone: phone || null,
+        city: city || null,
+        address: address || null,
+        gender: gender || null,
+      })
+      .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
+      .single();
 
-    const user = result.rows[0];
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      process.env.JWT_SECRET as string,
-      { expiresIn: process.env.JWT_EXPIRES_IN as string }
-    );
+    if (profileError) {
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      throw profileError;
+    }
 
-    res.status(201).json({ user, token });
+    const { data: { session }, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError || !session) {
+      await supabaseAdmin.auth.admin.deleteUser(authData.user.id);
+      throw new Error('Failed to create session');
+    }
+
+    res.status(201).json({ user: profile, token: session.access_token });
   } catch (err) {
-    console.error(err);
+    console.error('Registration error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -56,30 +85,30 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
-    const result = await query('SELECT * FROM users WHERE email = $1', [email]);
-    const user = result.rows[0];
+    const { data: { session }, error } = await supabaseAdmin.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-    if (!user) {
+    if (error) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
 
-    const valid = await bcrypt.compare(password, user.password_hash);
-    if (!valid) {
-      res.status(401).json({ error: 'Invalid credentials' });
+    const { data: profile } = await supabaseAdmin
+      .from('users')
+      .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
+      .eq('supabase_id', session!.user.id)
+      .single();
+
+    if (!profile) {
+      res.status(404).json({ error: 'User profile not found' });
       return;
     }
 
-    const token = jwt.sign(
-      { userId: user.id, role: user.role },
-      process.env.JWT_SECRET as string,
-      { expiresIn: process.env.JWT_EXPIRES_IN as string }
-    );
-
-    const { password_hash: _, ...safeUser } = user;
-    res.json({ user: safeUser, token });
+    res.json({ user: profile, token: session!.access_token });
   } catch (err) {
-    console.error(err);
+    console.error('Login error:', err);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -88,16 +117,32 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 router.get('/me', async (req: Request, res: Response): Promise<void> => {
   const authHeader = req.headers['authorization'];
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  if (!token) { res.status(401).json({ error: 'Not authenticated' }); return; }
+
+  if (!token) {
+    res.status(401).json({ error: 'Not authenticated' });
+    return;
+  }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: number };
-    const result = await query(
-      'SELECT id, name, email, role, avatar_url, phone, city, address, gender, created_at FROM users WHERE id = $1',
-      [payload.userId]
-    );
-    if (!result.rows[0]) { res.status(404).json({ error: 'User not found' }); return; }
-    res.json({ user: result.rows[0] });
+    const { data: { user: supabaseUser }, error: authError } = await supabaseAdmin.auth.getUser(token);
+
+    if (authError || !supabaseUser) {
+      res.status(401).json({ error: 'Invalid token' });
+      return;
+    }
+
+    const { data: profile, error: profileError } = await supabaseAdmin
+      .from('users')
+      .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
+      .eq('supabase_id', supabaseUser.id)
+      .single();
+
+    if (profileError || !profile) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    res.json({ user: profile });
   } catch {
     res.status(401).json({ error: 'Invalid token' });
   }
@@ -107,28 +152,56 @@ router.get('/me', async (req: Request, res: Response): Promise<void> => {
 router.patch('/me', async (req: Request, res: Response): Promise<void> => {
   const authHeader = req.headers['authorization'];
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  if (!token) { res.status(401).json({ error: 'Not authenticated' }); return; }
+
+  if (!token) {
+    res.status(401).json({ error: 'Not authenticated' });
+    return;
+  }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: number };
+    const { data: { user: supabaseUser }, error: authError } = await supabaseAdmin.auth.getUser(token);
+
+    if (authError || !supabaseUser) {
+      res.status(401).json({ error: 'Invalid token' });
+      return;
+    }
+
     const { name, avatar_url, phone, city, address, gender } = req.body;
-    
-    const result = await query(
-      `UPDATE users SET
-         name = COALESCE($1, name),
-         avatar_url = COALESCE($2, avatar_url),
-         phone = COALESCE($3, phone),
-         city = COALESCE($4, city),
-         address = COALESCE($5, address),
-         gender = COALESCE($6, gender)
-       WHERE id = $7 RETURNING id, name, email, role, avatar_url, phone, city, address, gender, created_at`,
-      [name, avatar_url, phone, city, address, gender, payload.userId]
-    );
-    
-    if (!result.rows[0]) { res.status(404).json({ error: 'User not found' }); return; }
-    res.json({ user: result.rows[0] });
+
+    const updateFields: Record<string, unknown> = {};
+    if (name !== undefined) updateFields.name = name;
+    if (avatar_url !== undefined) updateFields.avatar_url = avatar_url;
+    if (phone !== undefined) updateFields.phone = phone;
+    if (city !== undefined) updateFields.city = city;
+    if (address !== undefined) updateFields.address = address;
+    if (gender !== undefined) updateFields.gender = gender;
+
+    if (Object.keys(updateFields).length === 0) {
+      const { data: current } = await supabaseAdmin
+        .from('users')
+        .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
+        .eq('supabase_id', supabaseUser.id)
+        .single();
+
+      res.json({ user: current });
+      return;
+    }
+
+    const { data: profile, error: updateError } = await supabaseAdmin
+      .from('users')
+      .update(updateFields)
+      .eq('supabase_id', supabaseUser.id)
+      .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
+      .single();
+
+    if (updateError || !profile) {
+      res.status(404).json({ error: 'User not found' });
+      return;
+    }
+
+    res.json({ user: profile });
   } catch (err) {
-    console.error(err);
+    console.error('Update error:', err);
     res.status(500).json({ error: 'Internal server error or invalid token' });
   }
 });

@@ -22,13 +22,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Rehydrate from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem("ql_token");
     if (stored) {
       authAPI.me(stored)
         .then(({ user }) => { setUser(user); setToken(stored); })
-        .catch(() => localStorage.removeItem("ql_token"))
+        .catch(() => {
+          localStorage.removeItem("ql_token");
+          localStorage.removeItem("ql_refresh_token");
+        })
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
@@ -53,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setToken(null);
     localStorage.removeItem("ql_token");
+    localStorage.removeItem("ql_refresh_token");
     router.push("/");
   };
 

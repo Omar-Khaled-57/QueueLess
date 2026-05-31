@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { supabaseAdmin } from '../lib/supabase';
 
 export interface AuthPayload {
   userId: number;
+  supabaseUserId: string;
   role: 'user' | 'admin';
 }
 
@@ -14,7 +15,7 @@ declare global {
   }
 }
 
-export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
+export const authenticate = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   const authHeader = req.headers['authorization'];
   const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
@@ -24,11 +25,33 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET as string) as AuthPayload;
-    req.user = payload;
+    const { data: { user: supabaseUser }, error } = await supabaseAdmin.auth.getUser(token);
+
+    if (error || !supabaseUser) {
+      res.status(401).json({ error: 'Invalid or expired token' });
+      return;
+    }
+
+    const { data: profile } = await supabaseAdmin
+      .from('users')
+      .select('id, role')
+      .eq('supabase_id', supabaseUser.id)
+      .single();
+
+    if (!profile) {
+      res.status(401).json({ error: 'User profile not found' });
+      return;
+    }
+
+    req.user = {
+      userId: profile.id,
+      supabaseUserId: supabaseUser.id,
+      role: profile.role as 'user' | 'admin',
+    };
+
     next();
   } catch {
-    res.status(401).json({ error: 'Invalid or expired token' });
+    res.status(401).json({ error: 'Authentication failed' });
   }
 };
 
