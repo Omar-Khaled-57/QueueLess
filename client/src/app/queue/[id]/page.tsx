@@ -113,7 +113,7 @@ export default function QueuePage() {
   }
 
   return (
-    <div className="min-h-screen bg-cream flex flex-col md:flex-row items-start">
+    <div className="min-h-screen bg-cream flex flex-col md:flex-row items-start transition-colors duration-300">
       <Navigation />
       <div className={`w-full ${user ? "md:ms-64" : ""} min-h-screen bg-white md:bg-cream shadow-2xl md:shadow-none flex flex-col relative transition-all`}>
 

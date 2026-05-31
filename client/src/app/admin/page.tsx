@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  LayoutDashboard, Users, BarChart3, Settings,
+  LayoutDashboard, Users, BarChart3,
   PhoneCall, SkipForward, UserX, ChevronRight,
   TrendingUp, Clock, CheckCircle, AlertCircle, Bell
 } from "lucide-react";
@@ -160,11 +160,27 @@ export default function AdminDashboard() {
         {/* Content */}
         <div className="flex-1 overflow-y-auto px-6 mt-6 pb-28 space-y-6">
 
+          {/* Mobile View Tabs */}
+          <div className="flex gap-2 mb-4 md:hidden">
+            {[
+              { key: "dashboard" as View, label: t("dashboard") },
+              { key: "queue" as View, label: t("queue_list") },
+              { key: "analytics" as View, label: t("analytics") },
+            ].map(({ key, label }) => (
+              <button key={key} onClick={() => setView(key)}
+                className={`flex-1 py-3 rounded-2xl font-bold text-sm transition-all ${
+                  view === key ? "bg-primary text-white shadow-md" : "bg-white dark:bg-[#1a1a1a] text-accent/50 dark:text-white/50"
+                }`}>
+                {label}
+              </button>
+            ))}
+          </div>
+
           {/* Combined Now Serving + Waiting List for Desktop */}
           <div className="md:grid md:grid-cols-2 md:gap-8">
-            {/* Left Pane: Action Area */}
-            <AnimatePresence mode="wait">
-              {(view === "dashboard" || window.innerWidth >= 768) && (
+            {/* Left Pane: Action Area — visible on desktop always, on mobile only in dashboard view */}
+            <div className={`${view !== "dashboard" ? "hidden" : ""} md:block`}>
+              <AnimatePresence mode="wait">
                 <motion.div key="dash" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                 {serving ? (
                   <motion.div layout className="bg-linear-to-br from-primary to-primary-light rounded-3xl p-5 text-white shadow-lg">
@@ -209,15 +225,20 @@ export default function AdminDashboard() {
                     )}
                   </div>
                 )}
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
-                {/* Waiting List - Hidden on Mobile Dashboard, visible heavily on Desktop grid */}
-                <div className="hidden md:block">
+          {/* Right Pane: WaitList Full — visible on desktop always, on mobile only in queue view */}
+            <div className={`${view !== "queue" ? "hidden" : ""} md:block`}>
+              <AnimatePresence mode="wait">
+                <motion.div key="queue" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                   <h2 className="font-bold text-accent/50 dark:text-white/50 text-xs uppercase tracking-widest mb-3 transition-colors">
                     {t("waiting_list")} ({waiting.length})
                   </h2>
                   <div className="space-y-3">
                     <AnimatePresence>
-                      {waiting.slice(0, 5).map((ticket, i) => (
+                      {waiting.map((ticket, i) => (
                         <motion.div
                           key={ticket.id}
                           layout
@@ -236,9 +257,11 @@ export default function AdminDashboard() {
                               #{String(ticket.ticket_number).padStart(3, "0")} · ~{i * (queueInfo?.avg_service_time_min ?? 10)}{t("min")} {t("waiting")}
                             </p>
                           </div>
-                          <button onClick={() => noShow(ticket.id)} className="w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-xl flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors">
-                            <UserX className="w-4 h-4 text-rose-400" />
-                          </button>
+                          {user?.role === "admin" && (
+                            <button onClick={() => noShow(ticket.id)} className="w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-xl flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors">
+                              <UserX className="w-4 h-4 text-rose-400" />
+                            </button>
+                          )}
                         </motion.div>
                       ))}
                     </AnimatePresence>
@@ -249,65 +272,22 @@ export default function AdminDashboard() {
                       </div>
                     )}
                   </div>
-                </div>
-              </motion.div>
-            )}
-            </AnimatePresence>
-
-            {/* Right Pane: WaitList Full (Used for mobile Queue view OR desktop grid right side) */}
-            <AnimatePresence mode="wait">
-              {(view === "queue" || window.innerWidth >= 768) && (
-                <motion.div key="queue" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 md:block">
-                  <div className="md:hidden flex items-center justify-between mb-2">
-                    <h2 className="font-bold text-accent/50 dark:text-white/50 transition-colors text-xs uppercase tracking-widest">
-                      {t("mobile_queue_view")} ({waiting.length})
-                    </h2>
-                  </div>
-                  {/* Reuse identical list structure, or rely on layout hidden logic for desktop to save duplicate render */}
-                  <div className="md:hidden space-y-3">
-                    <AnimatePresence>
-                      {waiting.map((ticket, i) => (
-                        <motion.div
-                          key={ticket.id}
-                          layout
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0 }}
-                          transition={{ delay: i * 0.03 }}
-                          className="flex items-center gap-3 bg-cream dark:bg-[#1a1a1a] p-4 rounded-2xl border border-primary/5"
-                        >
-                          <div className="w-9 h-9 bg-white dark:bg-[#2a2a2a] rounded-xl flex items-center justify-center font-black text-accent/40 dark:text-white/40 text-sm shrink-0">
-                            {i + 1}
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-bold text-accent dark:text-white text-sm">{ticket.user_name}</p>
-                            <p className="text-accent/40 dark:text-white/40 text-xs">#{String(ticket.ticket_number).padStart(3, "0")}</p>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                    {waiting.length === 0 && (
-                      <div className="text-center py-10 text-accent/30">
-                        <Users className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                        <p className="font-bold">{t("queue_empty")}</p>
-                      </div>
-                    )}
-                  </div>
                 </motion.div>
-              )}
-            </AnimatePresence>
+              </AnimatePresence>
+            </div>
           </div>
 
-          <AnimatePresence mode="wait">
-            {view === "analytics" && (
+          {/* Mobile analytics — hidden on desktop (shown in main grid via Link) */}
+          <div className={`${view !== "analytics" ? "hidden" : ""} md:hidden`}>
+            <AnimatePresence mode="wait">
               <motion.div key="analytics" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                 {/* Stat cards — live data */}
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { label: t("served_today"), value: analytics?.served_today ?? 0, icon: CheckCircle, color: "text-primary", bg: "bg-primary/10" },
-                    { label: t("avg_wait"), value: `~${analytics?.avg_wait_min ?? 0}${t("min")}`, icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
-                    { label: t("no_shows"), value: analytics?.no_shows_today ?? 0, icon: UserX, color: "text-rose-500", bg: "bg-rose-50" },
-                    { label: t("total_queued"), value: (analytics?.served_today ?? 0) + (analytics?.no_shows_today ?? 0), icon: TrendingUp, color: "text-sky-500", bg: "bg-sky-50" },
+                    { label: t("served_today"), value: analytics?.served_today ?? 0, icon: CheckCircle, color: "text-primary", bg: "bg-primary/10 dark:bg-primary/20" },
+                    { label: t("avg_wait"), value: `~${analytics?.avg_wait_min ?? 0}${t("min")}`, icon: Clock, color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-500/10" },
+                    { label: t("no_shows"), value: analytics?.no_shows_today ?? 0, icon: UserX, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-500/10" },
+                    { label: t("total_queued"), value: (analytics?.served_today ?? 0) + (analytics?.no_shows_today ?? 0), icon: TrendingUp, color: "text-sky-500", bg: "bg-sky-50 dark:bg-sky-500/10" },
                   ].map(({ label, value, icon: Icon, color, bg }) => (
                     <div key={label} className="bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 rounded-3xl p-5 space-y-3 transition-colors">
                       <div className={`w-10 h-10 ${bg} rounded-2xl flex items-center justify-center`}>
@@ -358,11 +338,12 @@ export default function AdminDashboard() {
                   </motion.div>
                 </Link>
               </motion.div>
-            )}
-          </AnimatePresence>
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
 

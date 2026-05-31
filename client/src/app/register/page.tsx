@@ -57,7 +57,7 @@ export default function Register() {
       <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-primary/5 translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
       {/* Toggle — fixed top-right regardless of RTL */}
-      <div className="fixed top-6 z-50 [&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white" style={{ right: "1.5rem" }}>
+      <div className="fixed top-6 z-50" style={{ right: "1.5rem" }}>
         <ThemeLangToggle />
       </div>
 
@@ -85,7 +85,7 @@ export default function Register() {
         <div className="p-8 space-y-6 flex-1">
 
           {/* Role Switcher */}
-          <div className="flex p-1 bg-[#FFF5F9] dark:bg-[#111] rounded-2xl gap-1 transition-colors">
+          <div className="flex p-1 bg-cream dark:bg-[#111] rounded-2xl gap-1 transition-colors">
             {([
               { value: "user" as const, label: t("customer"), icon: User },
               { value: "admin" as const, label: t("business"), icon: Building2 },
@@ -96,7 +96,7 @@ export default function Register() {
                 className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold transition-all ${
                   role === value
                     ? "bg-white dark:bg-[#2a2a2a] text-primary shadow-sm"
-                    : "text-[#1A1A1A]/40 dark:text-white/30 hover:text-primary/60"
+                    : "text-accent/40 dark:text-white/30 hover:text-primary/60"
                 }`}
               >
                 <Icon className="w-4 h-4" />
@@ -109,7 +109,7 @@ export default function Register() {
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-3">
               {[
-                { icon: User, type: "text", placeholder: t("full_name"), value: name, setter: setName, required: true },
+                  { icon: User, type: "text", placeholder: t("full_name"), value: name, setter: setName, required: true },
                 { icon: Mail, type: "email", placeholder: t("email_placeholder"), value: email, setter: setEmail, required: true },
                 { icon: Lock, type: "password", placeholder: t("password_hint"), value: password, setter: setPassword, required: true },
                 { icon: Smartphone, type: "tel", placeholder: "Phone Number", value: phone, setter: setPhone, required: false },
@@ -118,7 +118,7 @@ export default function Register() {
               ].map(({ icon: Icon, type, placeholder, value, setter, required }) => (
                 <div key={placeholder} className="relative">
                   <div className="absolute inset-y-0 inset-s-4 flex items-center pointer-events-none">
-                    <Icon className="w-5 h-5 text-[#1A1A1A]/30 dark:text-white/25" />
+                    <Icon className="w-5 h-5 text-accent/30 dark:text-white/25" />
                   </div>
                   <input
                     type={type}
@@ -127,7 +127,7 @@ export default function Register() {
                     onChange={(e) => setter(e.target.value)}
                     required={required}
                     minLength={type === "password" ? 6 : undefined}
-                    className="w-full ps-12 pe-4 py-4 rounded-2xl bg-[#FFF5F9] dark:bg-[#111] dark:text-white border border-transparent focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-[#222] transition-all outline-none text-[#1A1A1A] font-medium placeholder:text-[#1A1A1A]/30 dark:placeholder:text-white/25"
+                    className="w-full ps-12 pe-4 py-4 rounded-2xl bg-cream dark:bg-[#111] dark:text-white border border-transparent focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-[#222] transition-all outline-none text-accent font-medium placeholder:text-accent/30 dark:placeholder:text-white/25"
                   />
                 </div>
               ))}
@@ -135,12 +135,12 @@ export default function Register() {
               {/* Gender selector */}
               <div className="relative">
                 <div className="absolute inset-y-0 inset-s-4 flex items-center pointer-events-none">
-                  <Users className="w-5 h-5 text-[#1A1A1A]/30 dark:text-white/25" />
+                  <Users className="w-5 h-5 text-accent/30 dark:text-white/25" />
                 </div>
                 <select
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full ps-12 pe-4 py-4 rounded-2xl bg-[#FFF5F9] dark:bg-[#111] dark:text-white border border-transparent focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-[#222] transition-all outline-none text-[#1A1A1A] font-medium appearance-none"
+                  className="w-full ps-12 pe-4 py-4 rounded-2xl bg-cream dark:bg-[#111] dark:text-white border border-transparent focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-[#222] transition-all outline-none text-accent font-medium appearance-none"
                 >
                   <option value="" disabled>Select Gender (Optional)</option>
                   <option value="male">Male</option>
@@ -172,7 +172,7 @@ export default function Register() {
             </motion.button>
           </form>
 
-          <p className="text-center text-[#1A1A1A]/50 dark:text-white/40 font-medium">
+          <p className="text-center text-accent/50 dark:text-white/40 font-medium">
             {t("already_have_account")}{" "}
             <Link href="/login" className="text-primary font-bold hover:underline">
               {t("login_button")}
@@ -181,7 +181,7 @@ export default function Register() {
         </div>
 
         {/* Footer */}
-        <div className="text-center pb-6 text-[#1A1A1A]/20 dark:text-white/15 text-xs font-bold uppercase tracking-widest">
+        <div className="text-center pb-6 text-accent/20 dark:text-white/15 text-xs font-bold uppercase tracking-widest">
           QueueLess v1.0
         </div>
       </motion.div>

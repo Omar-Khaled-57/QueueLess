@@ -33,7 +33,7 @@ export default function Navigation() {
   return (
     <>
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white dark:bg-[#1A1A1A] border-t border-primary/5 dark:border-white/5 px-6 py-4 flex justify-around items-center shadow-2xl z-50 transition-colors duration-300">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 w-full bg-white/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border-t border-primary/5 dark:border-white/5 px-4 py-2 flex justify-around items-center shadow-2xl z-50 transition-colors duration-300 safe-area-pb">
         {LINKS.map(({ icon: Icon, label, href }) => {
           const active = pathname === href || (href !== "/home" && href !== "/admin" && pathname.startsWith(href));
           return (
@@ -73,7 +73,7 @@ export default function Navigation() {
 
         {/* Logout & User Info — Pinned at bottom */}
         <div className="p-4 border-t border-primary/5 dark:border-white/5 space-y-2 bg-white dark:bg-[#1A1A1A]">
-          <div className="flex items-center gap-3 px-4 py-3 mb-2 rounded-2xl bg-[#FFF5F9] dark:bg-[#111]">
+          <div className="flex items-center gap-3 px-4 py-3 mb-2 rounded-2xl bg-cream dark:bg-[#111]">
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-black shadow-sm overflow-hidden">
               {user.avatar_url ? (
                 <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />

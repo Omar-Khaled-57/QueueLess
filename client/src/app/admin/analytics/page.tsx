@@ -58,10 +58,10 @@ export default function AnalyticsPage() {
   }
 
   const statCards = [
-    { label: t("served_today"), value: analytics?.served_today ?? 0, icon: CheckCircle, color: "text-primary", bg: "bg-primary/10" },
-    { label: t("avg_wait"), value: `~${analytics?.avg_wait_min ?? 0}${t("min")}`, icon: Clock, color: "text-amber-500", bg: "bg-amber-50" },
-    { label: t("no_shows"), value: analytics?.no_shows_today ?? 0, icon: UserX, color: "text-rose-500", bg: "bg-rose-50" },
-    { label: t("total_queued"), value: (analytics?.served_today ?? 0) + (analytics?.no_shows_today ?? 0), icon: Users, color: "text-sky-500", bg: "bg-sky-50" },
+    { label: t("served_today"), value: analytics?.served_today ?? 0, icon: CheckCircle, color: "text-primary", bg: "bg-primary/10 dark:bg-primary/20" },
+    { label: t("avg_wait"), value: `~${analytics?.avg_wait_min ?? 0}${t("min")}`, icon: Clock, color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-500/10" },
+    { label: t("no_shows"), value: analytics?.no_shows_today ?? 0, icon: UserX, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-500/10" },
+    { label: t("total_queued"), value: (analytics?.served_today ?? 0) + (analytics?.no_shows_today ?? 0), icon: Users, color: "text-sky-500", bg: "bg-sky-50 dark:bg-sky-500/10" },
   ];
 
   // Convert DB hourly data (0-23) to UI format

@@ -24,10 +24,10 @@ These accounts can browse queues, schedule tickets natively, and view historical
 1. Panda Man
    Email: bassem@user.com
 
-2. John Man
+2. NOT panda man
    Email: helmy@user.com
 
-3. Johnny Appleseed
+3. Man Foolan
    Email: mona@user.com
 
 4. Sir John Doe

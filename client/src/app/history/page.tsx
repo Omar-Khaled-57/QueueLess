@@ -24,11 +24,11 @@ const CARD_COLORS: Record<string, string> = {
 };
 
 const STATUS_CONFIG: Record<string, { icon: any, label: string, color: string, bg: string }> = {
-  done: { icon: CheckCircle, label: "Completed", color: "text-emerald-500", bg: "bg-emerald-50" },
-  cancelled: { icon: XCircle, label: "Cancelled", color: "text-rose-500", bg: "bg-rose-50" },
-  skipped: { icon: Clock, label: "Skipped", color: "text-amber-500", bg: "bg-amber-50" },
-  waiting: { icon: Clock, label: "Waiting", color: "text-blue-500", bg: "bg-blue-50" },
-  serving: { icon: Clock, label: "Serving", color: "text-purple-500", bg: "bg-purple-50" },
+  done: { icon: CheckCircle, label: "Completed", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-500/10" },
+  cancelled: { icon: XCircle, label: "Cancelled", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-500/10" },
+  skipped: { icon: Clock, label: "Skipped", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-500/10" },
+  waiting: { icon: Clock, label: "Waiting", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-500/10" },
+  serving: { icon: Clock, label: "Serving", color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-500/10" },
 };
 
 

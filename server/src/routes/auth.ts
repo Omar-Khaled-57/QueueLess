@@ -85,34 +85,40 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
   }
 
   try {
-    const { data: { session }, error } = await supabaseAdmin.auth.signInWithPassword({
-      email,
-      password,
+    // Use Supabase Auth REST API directly to avoid creating a second client (which fails
+    // on Node 20 without `ws` transport for Realtime). The admin client's service_role key
+    // stays unused for sign-in, so data queries keep using the service_role key.
+    const supabaseUrl = process.env.SUPABASE_URL!;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const authRes = await fetch(`${supabaseUrl}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        apikey: supabaseKey,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
     });
 
-    if (error) {
+    if (!authRes.ok) {
       res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
 
-    const sessionUserId = session!.user.id;
-    console.log('LOGIN DEBUG: sessionUserId=%s', sessionUserId);
+    const authBody = await authRes.json() as { access_token: string; user: { id: string; email?: string } };
+    const lookupEmail = authBody.user.email || email;
 
-    // Try with maybeSingle first to avoid coercion error
-    const { data: profile, error: profileQueryError } = await supabaseAdmin
+    const { data: profile } = await supabaseAdmin
       .from('users')
-      .select('id, name, email, role')
-      .eq('supabase_id', sessionUserId)
+      .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
+      .eq('email', lookupEmail)
       .maybeSingle();
-
-    console.log('LOGIN DEBUG: profileQueryError=%s profile=%j', profileQueryError?.message, profile);
 
     if (!profile) {
       res.status(404).json({ error: 'User profile not found' });
       return;
     }
 
-    res.json({ user: profile, token: session!.access_token });
+    res.json({ user: profile, token: authBody.access_token });
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ error: 'Internal server error' });
@@ -137,13 +143,14 @@ router.get('/me', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const lookupEmail = supabaseUser.email || '';
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('users')
       .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
-      .eq('supabase_id', supabaseUser.id)
-      .single();
+      .eq('email', lookupEmail)
+      .maybeSingle();
 
-    if (profileError || !profile) {
+    if (!profile) {
       res.status(404).json({ error: 'User not found' });
       return;
     }
@@ -182,12 +189,14 @@ router.patch('/me', async (req: Request, res: Response): Promise<void> => {
     if (address !== undefined) updateFields.address = address;
     if (gender !== undefined) updateFields.gender = gender;
 
+    const lookupEmail = supabaseUser.email || '';
+
     if (Object.keys(updateFields).length === 0) {
       const { data: current } = await supabaseAdmin
         .from('users')
         .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
-        .eq('supabase_id', supabaseUser.id)
-        .single();
+        .eq('email', lookupEmail)
+        .maybeSingle();
 
       res.json({ user: current });
       return;
@@ -196,7 +205,7 @@ router.patch('/me', async (req: Request, res: Response): Promise<void> => {
     const { data: profile, error: updateError } = await supabaseAdmin
       .from('users')
       .update(updateFields)
-      .eq('supabase_id', supabaseUser.id)
+      .eq('email', lookupEmail)
       .select('id, name, email, role, avatar_url, phone, city, address, gender, created_at')
       .single();
 

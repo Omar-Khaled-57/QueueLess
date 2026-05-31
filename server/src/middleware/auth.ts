@@ -32,11 +32,12 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
       return;
     }
 
+    const lookupEmail = supabaseUser.email || '';
     const { data: profile } = await supabaseAdmin
       .from('users')
       .select('id, role')
-      .eq('supabase_id', supabaseUser.id)
-      .single();
+      .eq('email', lookupEmail)
+      .maybeSingle();
 
     if (!profile) {
       res.status(401).json({ error: 'User profile not found' });

@@ -40,30 +40,30 @@ export default function Home() {
       icon: Zap,
       title: locale === "ar" ? "انضمام سريع" : "Instant Join",
       desc: locale === "ar" ? "انضم لأي طابور في ثوانٍ بنقرة واحدة." : "Join any queue in seconds with one tap.",
-      color: "bg-sky-100 text-sky-500",
+      color: "bg-sky-500/10 text-sky-500 dark:text-sky-400",
     },
     {
       icon: QrCode,
       title: locale === "ar" ? "تذاكر ذكية" : "Smart Tickets",
       desc: locale === "ar" ? "تذاكر رقمية، لا حاجة للطباعة." : "Digital tickets, no printing required.",
-      color: "bg-emerald-100 text-emerald-500",
+      color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400",
     },
   ];
 
   return (
     <div
-      className={`relative min-h-screen bg-white dark:bg-[#0f0f0f] selection:bg-primary/30 overflow-x-hidden ${theme === "dark" ? "dark" : ""}`}
+      className={`relative min-h-[100dvh] md:h-[100dvh] bg-white dark:bg-[#0f0f0f] selection:bg-primary/30 overflow-x-hidden md:overflow-hidden ${theme === "dark" ? "dark" : ""}`}
       dir={dir}
     >
       {/* Language / Theme Toggle — always top-right regardless of dir */}
-      <div className="fixed top-6 right-6 z-50 [&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white" style={{ right: "1.5rem", left: "auto" }}>
+      <div className="fixed top-6 right-6 z-50" style={{ right: "1.5rem", left: "auto" }}>
         <ThemeLangToggle />
       </div>
 
-      <div className="min-h-screen flex flex-col md:flex-row">
+      <div className="h-full flex flex-col md:flex-row">
 
         {/* LEFT (or right on RTL): Pink Hero Panel */}
-        <div className="bg-primary md:w-1/2 lg:w-[55%] flex flex-col items-center justify-center p-12 md:min-h-screen relative overflow-hidden arch-header md:rounded-none md:rounded-br-[6rem]">
+        <div className="bg-primary md:w-1/2 lg:w-[55%] flex flex-col items-center justify-center p-12 md:h-full relative overflow-hidden arch-header md:rounded-none md:rounded-br-[6rem]">
           {/* Decoration */}
           <div className="absolute top-10 left-10 w-24 h-24 rounded-full border-4 border-white/20" />
           <div className="absolute bottom-20 right-[-20px] w-48 h-48 rounded-full bg-secondary/30" />
@@ -114,61 +114,62 @@ export default function Home() {
         </div>
 
         {/* RIGHT: Content Panel */}
-        <div className="md:w-1/2 lg:w-[45%] flex flex-col justify-center px-8 md:px-16 py-20 transition-colors duration-300">
+        <div className="md:w-1/2 lg:w-[45%] flex flex-col px-6 sm:px-10 lg:px-14 xl:px-16 pt-24 pb-8 md:pt-20 md:pb-10 md:h-full md:overflow-y-auto transition-colors duration-300">
           <motion.div
             initial={{ opacity: 0, x: dir === "rtl" ? -30 : 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
+            className="my-auto w-full max-w-xl mx-auto"
           >
-            <h2 className="text-4xl md:text-5xl font-black text-[#1A1A1A] dark:text-white leading-tight mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-accent dark:text-white leading-[1.15] mb-2 sm:mb-3">
               {locale === "ar" ? (
                 <>انتظر أقل، <span className="text-primary italic">عش أكثر.</span></>
               ) : (
                 <>Wait less, <span className="text-primary italic">Live more.</span></>
               )}
             </h2>
-            <p className="text-[#1A1A1A]/60 dark:text-white/50 text-lg mb-10 leading-relaxed">
+            <p className="text-accent/60 dark:text-white/50 text-sm md:text-base lg:text-lg mb-6 leading-relaxed max-w-lg">
               {locale === "ar"
                 ? "انضم للطابور عن بُعد وتابع دورك في الوقت الفعلي من أي مكان."
                 : "Join the queue remotely and track your turn in real-time from anywhere."}
             </p>
 
             {/* Feature Grid */}
-            <div className="grid grid-cols-2 gap-4 mb-10">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:gap-4 mb-6 lg:mb-8">
               {FEATURES.map(({ icon: Icon, title, desc, color }, i) => (
                 <motion.div
                   key={title}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + i * 0.08 }}
-                  className="bg-[#F9F9F9] dark:bg-[#1a1a1a] rounded-3xl p-5 border border-[#eee] dark:border-white/5 shadow-sm transition-colors"
+                  className="bg-[#F9F9F9] dark:bg-[#1a1a1a] rounded-2xl sm:rounded-3xl p-3 lg:p-4 border border-black/5 dark:border-white/5 shadow-sm transition-colors flex flex-col"
                 >
-                  <div className={`w-10 h-10 ${color} rounded-xl flex items-center justify-center mb-3`}>
-                    <Icon className="w-5 h-5" />
+                  <div className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 ${color} rounded-lg sm:rounded-xl flex items-center justify-center mb-2 lg:mb-3`}>
+                    <Icon className="w-4 h-4 lg:w-5 lg:h-5" />
                   </div>
-                  <p className="font-bold text-[#1A1A1A] dark:text-white text-sm">{title}</p>
-                  <p className="text-[#1A1A1A]/50 dark:text-white/40 text-xs mt-1 leading-relaxed">{desc}</p>
+                  <p className="font-bold text-accent dark:text-white text-xs sm:text-sm lg:text-base">{title}</p>
+                  <p className="text-accent/50 dark:text-white/40 text-[10px] sm:text-xs mt-1 leading-relaxed flex-1">{desc}</p>
                 </motion.div>
               ))}
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
               <Link href="/register" className="flex-1">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full bg-primary text-white py-5 rounded-3xl font-bold text-lg flex items-center justify-center gap-3 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all"
+                  className="w-full bg-primary text-white py-3 sm:py-3.5 lg:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all"
                 >
                   {locale === "ar" ? "ابدأ الآن" : "Get Started"}
-                  <ArrowRight className={`w-5 h-5 ${dir === "rtl" ? "rotate-180" : ""}`} />
+                  <ArrowRight className={`w-4 h-4 sm:w-5 sm:h-5 ${dir === "rtl" ? "rotate-180" : ""}`} />
                 </motion.button>
               </Link>
               <Link href="/login" className="flex-1">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A] py-5 rounded-3xl font-bold text-lg flex items-center justify-center gap-3 transition-all hover:opacity-90"
+                  className="w-full bg-accent text-white dark:text-black py-3 sm:py-3.5 lg:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all hover:opacity-90"
                 >
                   {locale === "ar" ? "تسجيل الدخول" : "Sign In"}
                 </motion.button>

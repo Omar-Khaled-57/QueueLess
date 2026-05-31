@@ -87,7 +87,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-[#0f0f0f] flex flex-col md:flex-row items-start" dir={dir}>
+    <div className="min-h-screen bg-cream dark:bg-[#0f0f0f] flex flex-col md:flex-row items-start transition-colors duration-300" dir={dir}>
       <Navigation />
 
       <div className="w-full md:ms-64 min-h-screen flex flex-col">

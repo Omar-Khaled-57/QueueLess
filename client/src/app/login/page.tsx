@@ -51,7 +51,7 @@ export default function Login() {
       <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-primary/5 translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
       {/* Toggle — fixed top-right regardless of RTL */}
-      <div className="fixed top-6 z-50 [&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white" style={{ insetInlineEnd: "1.5rem" }}>
+      <div className="fixed top-6 z-50" style={{ insetInlineEnd: "1.5rem" }}>
         <ThemeLangToggle />
       </div>
 
@@ -85,7 +85,7 @@ export default function Login() {
               ].map(({ icon: Icon, type, placeholder, value, setter }) => (
                 <div key={placeholder} className="relative">
                   <div className="absolute inset-y-0 inset-s-4 flex items-center pointer-events-none">
-                    <Icon className="w-5 h-5 text-[#1A1A1A]/30 dark:text-white/25" />
+                    <Icon className="w-5 h-5 text-accent/30 dark:text-white/25" />
                   </div>
                   <input
                     type={type}
@@ -93,7 +93,7 @@ export default function Login() {
                     value={value}
                     onChange={(e) => setter(e.target.value)}
                     required
-                    className="w-full ps-12 pe-4 py-4 rounded-2xl bg-[#FFF5F9] dark:bg-[#111] dark:text-white border border-transparent focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-[#222] transition-all outline-none text-[#1A1A1A] font-medium placeholder:text-[#1A1A1A]/30 dark:placeholder:text-white/25"
+                    className="w-full ps-12 pe-4 py-4 rounded-2xl bg-cream dark:bg-[#111] dark:text-white border border-transparent focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-[#222] transition-all outline-none text-accent font-medium placeholder:text-accent/30 dark:placeholder:text-white/25"
                   />
                 </div>
               ))}
@@ -127,7 +127,7 @@ export default function Login() {
             </motion.button>
           </form>
 
-          <p className="text-center text-[#1A1A1A]/50 dark:text-white/40 font-medium pb-2">
+            <p className="text-center text-accent/50 dark:text-white/40 font-medium pb-2">
             {t("no_account")}{" "}
             <Link href="/register" className="text-primary font-bold hover:underline">
               {t("register_now")}
@@ -136,7 +136,7 @@ export default function Login() {
         </div>
 
         {/* Footer */}
-        <div className="text-center pb-6 text-[#1A1A1A]/20 dark:text-white/15 text-xs font-bold uppercase tracking-widest">
+        <div className="text-center pb-6 text-accent/20 dark:text-white/15 text-xs font-bold uppercase tracking-widest">
           Secured by JWT
         </div>
       </motion.div>
