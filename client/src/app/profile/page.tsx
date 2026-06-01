@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import ThemeLangToggle from "@/components/ThemeLangToggle";
 import { useRef, useState, useEffect } from "react";
-import { authAPI, notificationsAPI, type Notification } from "@/lib/api";
+import { authAPI, businessAPI, notificationsAPI, type Notification, type Business } from "@/lib/api";
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function ProfilePage() {
@@ -32,6 +32,11 @@ export default function ProfilePage() {
   const [editAddress, setEditAddress] = useState("");
   const [editGender, setEditGender] = useState("");
   const [saving, setSaving] = useState(false);
+
+  // Business State (for admin/business accounts)
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [businessImage, setBusinessImage] = useState<string | null>(null);
+  const businessFileInputRef = useRef<HTMLInputElement>(null);
 
   // Notification State
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -55,6 +60,21 @@ export default function ProfilePage() {
     }
   }, [token]);
 
+  // Fetch business if user is admin
+  useEffect(() => {
+    if (token && user?.role === 'admin') {
+      businessAPI.list()
+        .then(({ businesses }) => {
+          const myBiz = businesses.find(b => b.owner_id === user.id);
+          if (myBiz) {
+            setBusiness(myBiz);
+            if (myBiz.image_url) setBusinessImage(myBiz.image_url);
+          }
+        })
+        .catch(console.error);
+    }
+  }, [token, user]);
+
   const handleLogout = () => {
     logout();
     router.push("/login");
@@ -76,6 +96,25 @@ export default function ProfilePage() {
         } catch (err) {
           console.error("Failed to update avatar", err);
           alert("Could not save profile picture.");
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleBusinessImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && token && business) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Str = reader.result as string;
+        setBusinessImage(base64Str);
+        try {
+          const res = await businessAPI.update(business.id, { image_url: base64Str }, token);
+          setBusiness(res.business);
+        } catch (err) {
+          console.error("Failed to update business image", err);
+          alert("Could not save business image.");
         }
       };
       reader.readAsDataURL(file);
@@ -204,6 +243,46 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
+
+          {/* Business Image Section (admin only) */}
+          {user?.role === "admin" && (
+            <div className="mb-6">
+              <p className="text-(--color-accent)/40 dark:text-white/30 text-xs font-black uppercase tracking-widest mb-3 pl-1">
+                {t("business") || "Business"} {t("profile") || "Profile"} Image
+              </p>
+              <div className="flex items-center gap-4">
+                <div
+                  onClick={() => businessFileInputRef.current?.click()}
+                  className="w-24 h-24 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-sm border border-primary/5 flex items-center justify-center cursor-pointer overflow-hidden ring-2 ring-primary/10 hover:ring-primary/30 transition-all"
+                >
+                  {businessImage ? (
+                    <img src={businessImage} alt="Business" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-3xl font-black text-primary/40 select-none">
+                      {business?.name?.[0]?.toUpperCase() || "B"}
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <p className="text-(--color-accent) dark:text-white font-bold text-sm">{business?.name}</p>
+                  <p className="text-(--color-accent)/40 dark:text-white/40 text-xs">{business?.category}</p>
+                  <button
+                    onClick={() => businessFileInputRef.current?.click()}
+                    className="mt-2 text-primary text-xs font-bold hover:underline text-start"
+                  >
+                    {businessImage ? t("edit_profile") || "Change Image" : "Upload Image"}
+                  </button>
+                </div>
+                <input
+                  ref={businessFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBusinessImageChange}
+                  className="hidden"
+                />
+              </div>
+            </div>
+          )}
 
           {/* Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">

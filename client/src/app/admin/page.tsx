@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { queueAPI, businessAPI, type Ticket, type Business, type Queue, type QueueAnalytics } from "@/lib/api";
+import { queueAPI, businessAPI, notificationsAPI, type Ticket, type Business, type Queue, type QueueAnalytics, type Notification } from "@/lib/api";
 import { io, Socket } from "socket.io-client";
 import { Loader2 } from "lucide-react";
 import Navigation from "@/components/Navigation";
@@ -30,6 +30,11 @@ export default function AdminDashboard() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [analytics, setAnalytics] = useState<QueueAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Notification State
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
 
   // Fetch initial data
   useEffect(() => {
@@ -61,6 +66,17 @@ export default function AdminDashboard() {
     load();
   }, [user, token]);
 
+  // Fetch notifications
+  useEffect(() => {
+    if (!token) return;
+    notificationsAPI.getAll(token)
+      .then(r => {
+        setNotifications(r.notifications);
+        setUnreadCount(r.notifications.filter(n => !n.is_read).length);
+      })
+      .catch(console.error);
+  }, [token]);
+
   // Socket connection
   useEffect(() => {
     if (!queueInfo) return;
@@ -83,6 +99,17 @@ export default function AdminDashboard() {
 
   const serving = tickets.find((t) => t.status === "serving");
   const waiting = tickets.filter((t) => t.status === "waiting");
+
+  const handleMarkRead = async (id: number) => {
+    if (!token) return;
+    try {
+      await notificationsAPI.markRead(id, token);
+      setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const callNext = async () => {
     if (!queueInfo || !token) return;
@@ -135,9 +162,18 @@ export default function AdminDashboard() {
               <Link href="/admin/analytics" className="hidden sm:block px-4 py-2 border border-white/20 text-white rounded-xl font-bold text-sm hover:bg-white/10 transition-colors">
                 {t("view_analytics")}
               </Link>
-              <button className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors relative">
+              <button
+                onClick={() => setIsNotifModalOpen(true)}
+                className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors relative cursor-pointer"
+              >
                 <Bell className="w-5 h-5 text-white" />
-                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-sun rounded-full border-2 border-secondary" />
+                {unreadCount > 0 ? (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-sun text-accent text-[10px] font-black rounded-full flex items-center justify-center border-2 border-primary">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                ) : (
+                  <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-sun rounded-full border-2 border-secondary" />
+                )}
               </button>
             </div>
           </div>
@@ -342,6 +378,39 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+      {/* Notifications Modal */}
+      {isNotifModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white dark:bg-[#1a1a1a] rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl relative flex flex-col max-h-[80vh]"
+          >
+            <div className="flex items-center justify-between mb-6 shrink-0">
+              <h2 className="text-2xl font-black text-accent dark:text-white">{t("notifications") || "Notifications"}</h2>
+              <button onClick={() => setIsNotifModalOpen(false)} className="text-accent/40 hover:text-accent p-2">✕</button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto space-y-3 -mx-2 px-2 pb-4">
+              {notifications.length === 0 ? (
+                <div className="text-center py-10 text-accent/40 font-bold">No notifications yet!</div>
+              ) : (
+                notifications.map(n => (
+                  <div key={n.id} onClick={() => !n.is_read && handleMarkRead(n.id)} className={`p-4 rounded-2xl border transition-colors cursor-pointer ${!n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-(--color-cream) dark:bg-[#111] border-transparent'}`}>
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h4 className={`font-bold text-sm ${!n.is_read ? 'text-primary' : 'text-accent dark:text-white'}`}>{n.title}</h4>
+                        <p className="text-accent/70 dark:text-white/60 text-xs mt-1 leading-relaxed">{n.message}</p>
+                      </div>
+                      {!n.is_read && <span className="w-2.5 h-2.5 bg-primary rounded-full shrink-0 animate-pulse mt-1" />}
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

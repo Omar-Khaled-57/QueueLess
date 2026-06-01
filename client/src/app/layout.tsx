@@ -76,7 +76,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${cairo.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans">
+      <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
         <LanguageProvider>
           <ThemeProvider>
             <AuthProvider>

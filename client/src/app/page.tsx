@@ -52,7 +52,7 @@ export default function Home() {
 
   return (
     <div
-      className={`relative min-h-[100dvh] md:h-[100dvh] bg-white dark:bg-[#0f0f0f] selection:bg-primary/30 overflow-x-hidden md:overflow-hidden ${theme === "dark" ? "dark" : ""}`}
+      className={`relative min-h-[100dvh] md:h-[100dvh] bg-background text-foreground transition-colors duration-300 selection:bg-primary/30 overflow-x-hidden md:overflow-hidden ${theme === "dark" ? "dark" : ""}`}
       dir={dir}
     >
       {/* Language / Theme Toggle — always top-right regardless of dir */}
@@ -63,7 +63,7 @@ export default function Home() {
       <div className="h-full flex flex-col md:flex-row">
 
         {/* LEFT (or right on RTL): Pink Hero Panel */}
-        <div className="bg-primary md:w-1/2 lg:w-[55%] flex flex-col items-center justify-center p-12 md:h-full relative overflow-hidden arch-header md:rounded-none md:rounded-br-[6rem]">
+        <div className="bg-primary md:w-1/2 lg:w-[55%] flex flex-col items-center justify-center p-12 portrait:pt-36 md:pt-12 md:h-full relative overflow-hidden arch-header md:rounded-none md:rounded-br-[6rem]">
           {/* Decoration */}
           <div className="absolute top-10 left-10 w-24 h-24 rounded-full border-4 border-white/20" />
           <div className="absolute bottom-20 right-[-20px] w-48 h-48 rounded-full bg-secondary/30" />
@@ -75,7 +75,7 @@ export default function Home() {
             transition={{ delay: 0.15, type: "spring", stiffness: 120 }}
             className="z-10 text-center"
           >
-            <h1 className="text-white text-6xl md:text-7xl font-black tracking-tight mb-3 drop-shadow-md">
+            <h1 className="text-white text-6xl md:text-7xl font-black tracking-tight mb-3 drop-shadow-md pe-14 md:pe-0">
               Queue<span className="text-sun">Less</span>
             </h1>
             <p className="text-white/80 text-xl font-medium mb-10">
@@ -114,7 +114,7 @@ export default function Home() {
         </div>
 
         {/* RIGHT: Content Panel */}
-        <div className="md:w-1/2 lg:w-[45%] flex flex-col px-6 sm:px-10 lg:px-14 xl:px-16 pt-24 pb-8 md:pt-20 md:pb-10 md:h-full md:overflow-y-auto transition-colors duration-300">
+        <div className="md:w-1/2 lg:w-[45%] flex flex-col px-6 sm:px-10 lg:px-14 xl:px-16 pt-24 portrait:pt-5 pb-8 md:pt-20 md:pb-10 md:h-full md:overflow-y-auto transition-colors duration-300">
           <motion.div
             initial={{ opacity: 0, x: dir === "rtl" ? -30 : 30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -142,9 +142,9 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + i * 0.08 }}
-                  className="bg-[#F9F9F9] dark:bg-[#1a1a1a] rounded-2xl sm:rounded-3xl p-3 lg:p-4 border border-black/5 dark:border-white/5 shadow-sm transition-colors flex flex-col"
+                  className="bg-[var(--card-bg)] rounded-xl portrait:rounded-xl sm:rounded-2xl md:rounded-3xl p-3 lg:p-4 border border-black/5 dark:border-white/5 shadow-sm transition-colors flex flex-col"
                 >
-                  <div className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 ${color} rounded-lg sm:rounded-xl flex items-center justify-center mb-2 lg:mb-3`}>
+                  <div className={`w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 ${color} rounded-md portrait:rounded-md sm:rounded-lg md:rounded-xl flex items-center justify-center mb-2 lg:mb-3`}>
                     <Icon className="w-4 h-4 lg:w-5 lg:h-5" />
                   </div>
                   <p className="font-bold text-accent dark:text-white text-xs sm:text-sm lg:text-base">{title}</p>

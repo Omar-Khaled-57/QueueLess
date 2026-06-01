@@ -36,6 +36,8 @@ export const authAPI = {
 export const businessAPI = {
   list: () => apiFetch<{ businesses: Business[] }>('/api/businesses'),
   get: (id: number) => apiFetch<{ business: Business; queues: Queue[] }>(`/api/businesses/${id}`),
+  update: (id: number, body: Partial<Business>, token: string) =>
+    apiFetch<{ business: Business }>(`/api/businesses/${id}`, { method: 'PATCH', body: JSON.stringify(body), token }),
 };
 
 export const queueAPI = {
