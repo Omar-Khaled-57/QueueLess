@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  turbopack: {},
   webpack: (config, { dev }) => {
     if (dev) {
       // Avoid 'eval' in development to comply with strict CSP rules
