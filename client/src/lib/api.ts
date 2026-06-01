@@ -133,6 +133,7 @@ const BUSINESS_FALLBACK_IMAGES: Record<string, string> = {
 };
 
 export function getBusinessImage(business: Business): string | null {
-  if (business.image_url) return business.image_url;
-  return BUSINESS_FALLBACK_IMAGES[business.name] || null;
+  const url = business.image_url || BUSINESS_FALLBACK_IMAGES[business.name] || null;
+  if (!url) return null;
+  return url.startsWith("data:") ? url : encodeURI(url);
 }
