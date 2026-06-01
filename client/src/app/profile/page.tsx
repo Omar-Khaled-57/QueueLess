@@ -176,7 +176,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-cream dark:bg-[#0f0f0f] flex flex-col md:flex-row items-start transition-colors duration-300" dir={dir}>
+    <div className="min-h-screen bg-cream dark:bg-[#0f0f0f] flex flex-col md:flex-row items-start transition-colors duration-300 landscape:pb-10" dir={dir}>
       <Navigation />
 
       {/* Page Content */}
@@ -248,7 +248,7 @@ export default function ProfilePage() {
           {user?.role === "admin" && (
             <div className="mb-6">
               <p className="text-(--color-accent)/40 dark:text-white/30 text-xs font-black uppercase tracking-widest mb-3 pl-1">
-                {t("business") || "Business"} {t("profile") || "Profile"} Image
+                {t("business")} Image
               </p>
               <div className="flex items-center gap-4">
                 <div
@@ -264,13 +264,13 @@ export default function ProfilePage() {
                   )}
                 </div>
                 <div className="flex flex-col">
-                  <p className="text-(--color-accent) dark:text-white font-bold text-sm">{business?.name}</p>
-                  <p className="text-(--color-accent)/40 dark:text-white/40 text-xs">{business?.category}</p>
+                  <p className="text-(--color-accent) dark:text-white font-bold text-sm">{business?.name || "Your Business"}</p>
+                  <p className="text-(--color-accent)/40 dark:text-white/40 text-xs">{business?.category || "—"}</p>
                   <button
                     onClick={() => businessFileInputRef.current?.click()}
                     className="mt-2 text-primary text-xs font-bold hover:underline text-start"
                   >
-                    {businessImage ? t("edit_profile") || "Change Image" : "Upload Image"}
+                    {businessImage ? "Change Image" : "Upload Image"}
                   </button>
                 </div>
                 <input
@@ -281,6 +281,12 @@ export default function ProfilePage() {
                   className="hidden"
                 />
               </div>
+              {!business && (
+                <p className="text-xs text-accent/40 dark:text-white/40 mt-2 pl-1">
+                  No business found. Make sure your business is active on the{" "}
+                  <a href="/admin/queue" className="text-primary underline">admin page</a>.
+                </p>
+              )}
             </div>
           )}
 
