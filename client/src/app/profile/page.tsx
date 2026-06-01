@@ -102,19 +102,40 @@ export default function ProfilePage() {
     }
   };
 
+  const compressImage = (dataUrl: string, maxW = 1024): Promise<string> => {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxW || h > maxW) {
+          const ratio = Math.min(maxW / w, maxW / h);
+          w = Math.round(w * ratio);
+          h = Math.round(h * ratio);
+        }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        const ctx = c.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', 0.8));
+      };
+      img.src = dataUrl;
+    });
+  };
+
   const handleBusinessImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && token && business) {
       const reader = new FileReader();
       reader.onloadend = async () => {
-        const base64Str = reader.result as string;
-        setBusinessImage(base64Str);
         try {
-          const res = await businessAPI.update(business.id, { image_url: base64Str }, token);
+          const compressed = await compressImage(reader.result as string);
+          setBusinessImage(compressed);
+          const res = await businessAPI.update(business.id, { image_url: compressed }, token);
           setBusiness(res.business);
         } catch (err) {
+          const msg = err instanceof Error ? err.message : "Unknown error";
           console.error("Failed to update business image", err);
-          alert("Could not save business image.");
+          alert("Could not save business image: " + msg);
         }
       };
       reader.readAsDataURL(file);
