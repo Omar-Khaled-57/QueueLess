@@ -120,15 +120,9 @@ export default function QueuePage() {
         {/* Header */}
         <div 
           className="bg-primary px-6 pt-10 pb-20 arch-header md:rounded-b-none md:rounded-bl-[4rem] relative overflow-hidden bg-cover bg-center"
-          style={business?.image_url ? { backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url(${business.image_url})` } : {}}
+          style={{ backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.8)), url(${getBusinessImage(business!)})` }}
         >
-          {/* Fallback decorations if no image */}
-          {!business?.image_url && (
-            <>
-              <div className="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-white/10" />
-              <div className="absolute bottom-4 -left-6 w-28 h-28 rounded-full bg-secondary/25" />
-            </>
-          )}
+          <div className="absolute inset-0 bg-black/20" />
           <div className="flex items-center gap-4 relative z-10">
             <Link href="/home" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
               <ArrowLeft className="w-5 h-5 text-white" />
