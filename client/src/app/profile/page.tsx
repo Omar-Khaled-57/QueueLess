@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import {
   Mail, MapPin, Edit2, LogOut,
-  Bell, Globe, Moon, Shield, ChevronRight, Camera
+  Bell, Globe, Moon, Shield, ChevronRight, Camera, Building2
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -157,15 +157,18 @@ export default function ProfilePage() {
     toggleValue?: boolean | string;
   };
 
+  const accountItems: MenuItem[] = [
+    { icon: Edit2, label: t("edit_profile") || "Edit Profile", badge: null },
+    { icon: Bell, label: t("notifications") || "Notifications", badge: unreadCount > 0 ? String(unreadCount) : null },
+    { icon: Shield, label: t("privacy") || "Privacy & Security", badge: null },
+  ];
+
+  if (user?.role === "admin") {
+    accountItems.splice(1, 0, { icon: Building2, label: "Business Image", badge: null });
+  }
+
   const MENU_ITEMS: { section: string, items: MenuItem[] }[] = [
-    {
-      section: t("account") || "Account",
-      items: [
-        { icon: Edit2, label: t("edit_profile") || "Edit Profile", badge: null },
-        { icon: Bell, label: t("notifications") || "Notifications", badge: unreadCount > 0 ? String(unreadCount) : null },
-        { icon: Shield, label: t("privacy") || "Privacy & Security", badge: null },
-      ],
-    },
+    { section: t("account") || "Account", items: accountItems },
     {
       section: t("preferences") || "Preferences",
       items: [
@@ -244,52 +247,6 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Business Image Section (admin only) */}
-          {user?.role === "admin" && (
-            <div className="mb-6">
-              <p className="text-(--color-accent)/40 dark:text-white/30 text-xs font-black uppercase tracking-widest mb-3 pl-1">
-                {t("business")} Image
-              </p>
-              <div className="flex items-center gap-4">
-                <div
-                  onClick={() => businessFileInputRef.current?.click()}
-                  className="w-24 h-24 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-sm border border-primary/5 flex items-center justify-center cursor-pointer overflow-hidden ring-2 ring-primary/10 hover:ring-primary/30 transition-all"
-                >
-                  {businessImage ? (
-                    <img src={businessImage} alt="Business" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-3xl font-black text-primary/40 select-none">
-                      {business?.name?.[0]?.toUpperCase() || "B"}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col">
-                  <p className="text-(--color-accent) dark:text-white font-bold text-sm">{business?.name || "Your Business"}</p>
-                  <p className="text-(--color-accent)/40 dark:text-white/40 text-xs">{business?.category || "—"}</p>
-                  <button
-                    onClick={() => businessFileInputRef.current?.click()}
-                    className="mt-2 text-primary text-xs font-bold hover:underline text-start"
-                  >
-                    {businessImage ? "Change Image" : "Upload Image"}
-                  </button>
-                </div>
-                <input
-                  ref={businessFileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleBusinessImageChange}
-                  className="hidden"
-                />
-              </div>
-              {!business && (
-                <p className="text-xs text-accent/40 dark:text-white/40 mt-2 pl-1">
-                  No business found. Make sure your business is active on the{" "}
-                  <a href="/admin/queue" className="text-primary underline">admin page</a>.
-                </p>
-              )}
-            </div>
-          )}
-
           {/* Info Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
             {(
@@ -311,6 +268,15 @@ export default function ProfilePage() {
               </motion.div>
             ))}
           </div>
+
+          {/* Hidden file input for business image */}
+          <input
+            ref={businessFileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleBusinessImageChange}
+            className="hidden"
+          />
 
           {/* Settings Menu */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -334,6 +300,8 @@ export default function ProfilePage() {
                           setIsEditModalOpen(true);
                         } else if (Icon === Bell) {
                           setIsNotifModalOpen(true);
+                        } else if (Icon === Building2) {
+                          businessFileInputRef.current?.click();
                         } else if (Icon === Globe) {
                           toggleLocale();
                         } else if (Icon === Moon) {
@@ -375,7 +343,7 @@ export default function ProfilePage() {
           <motion.button
             onClick={handleLogout}
             whileTap={{ scale: 0.98 }}
-            className="w-full md:max-w-sm bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-2xl px-5 py-4 flex items-center gap-4 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all portrait:mb-28"
+            className="w-full md:max-w-sm bg-rose-50 dark:bg-rose-500/10 text-rose-500 rounded-2xl px-5 py-4 flex items-center gap-4 hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-all portrait:mb-28 landscape:mb-10"
           >
             <div className="w-10 h-10 bg-rose-100 dark:bg-rose-500/20 rounded-xl flex items-center justify-center shrink-0">
               <LogOut className="w-5 h-5 text-rose-500" />
