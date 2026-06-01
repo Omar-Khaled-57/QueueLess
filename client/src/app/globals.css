@@ -122,30 +122,18 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #D13B82;
+  background: #eb4899;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #f81680;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  background: #a82e66;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #f81680;
+  background: #f9167f;
 }
 
 /* Custom Scrollbar — Firefox */
 html {
   scrollbar-width: thin;
-  scrollbar-color: #D13B82 transparent;
-}
-
-.dark html {
-  scrollbar-color: #a82e66 transparent;
+  scrollbar-color: #eb4899 transparent;
 }
 
 /* Remove default scrollbar-hide if not defined */
