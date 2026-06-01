@@ -122,3 +122,17 @@ export type QueueAnalytics = {
   served_today: number; no_shows_today: number;
   avg_wait_min: number; hourly_distribution: { hour: number; count: number }[];
 };
+
+const BUSINESS_FALLBACK_IMAGES: Record<string, string> = {
+  "Grand Egyptian Museum": "/res/Grand Egyptian Museum.webp",
+  "Cilantro Stanley Coffee": "/res/Cilantro Stanley Coffee.jpg",
+  "Banque du Caire": "/res/Banque du Caire.jfif",
+  "City Stars Movie Center": "/res/City Stars Movie Center.jpg",
+  "Alfa Medical Labs": "/res/Alfa Medical Labs.jpg",
+  "Vodafone Customer Care": "/res/Vodafone Customer Care.jpg",
+};
+
+export function getBusinessImage(business: Business): string | null {
+  if (business.image_url) return business.image_url;
+  return BUSINESS_FALLBACK_IMAGES[business.name] || null;
+}

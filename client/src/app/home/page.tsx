@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
-import { businessAPI, ticketAPI, notificationsAPI, type Business, type Ticket, type Notification } from "@/lib/api";
+import { businessAPI, ticketAPI, notificationsAPI, getBusinessImage, type Business, type Ticket, type Notification } from "@/lib/api";
 import Navigation from "@/components/Navigation";
 
 const CATEGORIES = ["All", "Clinic", "Bank", "Lab", "Government", "Pharmacy"];
@@ -208,10 +208,9 @@ export default function CustomerDashboard() {
                         {/* Image or Color Banner */}
                         <div
                           className={`h-24 relative flex items-end p-4 bg-cover bg-center bg-gradient-to-r ${CARD_COLORS[biz.category] ?? CARD_COLORS.general}`}
-                          style={biz.image_url ? { backgroundImage: `url(${biz.image_url})` } : {}}
+                          style={{ backgroundImage: `url(${getBusinessImage(biz)})` }}
                         >
-                          {/* Dark overlay for readability if using an image */}
-                          {biz.image_url && <div className="absolute inset-0 bg-black/40" />}
+                          <div className="absolute inset-0 bg-black/40" />
                           <div className="relative z-10 w-full flex justify-between items-end">
                             <span className="text-white text-xs font-bold uppercase tracking-widest bg-black/40 px-3 py-1 rounded-full backdrop-blur-sm">
                               {biz.category}

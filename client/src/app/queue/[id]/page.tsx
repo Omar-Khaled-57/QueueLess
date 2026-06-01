@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
-import { queueAPI, businessAPI, type Ticket, type Business, type Queue } from "@/lib/api";
+import { queueAPI, businessAPI, getBusinessImage, type Ticket, type Business, type Queue } from "@/lib/api";
 import Navigation from "@/components/Navigation";
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
