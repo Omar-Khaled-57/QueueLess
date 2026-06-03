@@ -81,7 +81,7 @@ export default function SettingsPage() {
     {
       title: t("about"),
       items: [
-        { icon: Info, label: t("app_version") || "App Version", badge: "v1.0.0" },
+        { icon: Info, label: t("app_version") || "App Version", badge: "v2.0.0" },
         { icon: Star, label: t("rate_app") || "Rate QueueLess", arrow: true },
       ],
     },
