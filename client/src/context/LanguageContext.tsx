@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useSyncExternalStore, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 type Locale = "en" | "ar";
 
@@ -19,12 +19,6 @@ function getLocaleSnapshot(): Locale {
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocale] = useState<Locale>(getLocaleSnapshot);
-  const isMounted = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
-
   useEffect(() => {
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = locale;
@@ -42,7 +36,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   return (
     <LanguageContext.Provider value={{ locale, toggleLocale, dir: locale === "ar" ? "rtl" : "ltr" }}>
-      {isMounted ? children : <div style={{ visibility: "hidden" }}>{children}</div>}
+      {children}
     </LanguageContext.Provider>
   );
 }
