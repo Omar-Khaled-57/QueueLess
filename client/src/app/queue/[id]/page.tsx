@@ -107,13 +107,13 @@ export default function QueuePage() {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-cream flex items-center justify-center"><Loader2 className="animate-spin text-primary w-10 h-10"/></div>;
+    return <div className="min-h-screen bg-background flex items-center justify-center"><Loader2 className="animate-spin text-primary w-10 h-10"/></div>;
   }
 
   return (
-    <div className="min-h-screen bg-cream flex flex-col md:flex-row items-start transition-colors duration-300">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row items-start transition-colors duration-300">
       <Navigation />
-      <div className={`w-full ${user ? "md:ms-64" : ""} min-h-screen bg-white md:bg-cream shadow-md md:shadow-none flex flex-col relative transition-all overflow-x-hidden`}>
+      <div className={`w-full ${user ? "md:ms-64" : ""} min-h-screen bg-white dark:bg-[#1a1a1a] md:bg-cream md:dark:bg-background shadow-md md:shadow-none flex flex-col relative transition-all overflow-x-hidden`}>
 
         {/* Header */}
         <div 
@@ -262,7 +262,7 @@ export default function QueuePage() {
                       ? "bg-primary/10 border-2 border-primary/20"
                       : isMe
                       ? "bg-sun/10 border-2 border-sun/30"
-                      : "bg-cream"
+                      : "bg-cream dark:bg-[#111]"
                   }`}
                 >
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 ${
