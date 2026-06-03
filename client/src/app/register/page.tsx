@@ -7,13 +7,11 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useTheme } from "@/context/ThemeContext";
 import ThemeLangToggle from "@/components/ThemeLangToggle";
 
 export default function Register() {
   const { register, user: authUser } = useAuth();
   const { t, dir } = useTranslation();
-  const { theme } = useTheme();
   const router = useRouter();
   const [role, setRole] = useState<"user" | "admin">("user");
   const [name, setName] = useState("");

@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import {
-  Bell, Globe, Moon, Sun, Shield, Smartphone,
+  Bell, Globe, Moon, Shield, Smartphone,
   ChevronRight, Volume2, Wifi, Info, Star
 } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";

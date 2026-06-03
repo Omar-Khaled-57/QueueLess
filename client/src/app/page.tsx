@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import ThemeLangToggle from "@/components/ThemeLangToggle";
 
 export default function Home() {
-  const { t, dir, locale } = useTranslation();
+  const { dir, locale } = useTranslation();
   const { theme } = useTheme();
   const { user, loading } = useAuth();
   const router = useRouter();

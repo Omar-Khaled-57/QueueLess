@@ -3,14 +3,14 @@
 import { motion } from "framer-motion";
 import {
   Clock, CheckCircle, XCircle, RotateCcw, TicketSlash,
-  Home, History, User, Settings, MapPin, ChevronRight
+  MapPin
 } from "lucide-react";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import ThemeLangToggle from "@/components/ThemeLangToggle";
 import { useTranslation } from "@/hooks/useTranslation";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { ticketAPI, type Ticket } from "@/lib/api";
 
@@ -23,7 +23,7 @@ const CARD_COLORS: Record<string, string> = {
   general:    "from-slate-400 to-slate-600",
 };
 
-const STATUS_CONFIG: Record<string, { icon: any, label: string, color: string, bg: string }> = {
+const STATUS_CONFIG: Record<string, { icon: React.ElementType, label: string, color: string, bg: string }> = {
   done: { icon: CheckCircle, label: "Completed", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-500/10" },
   cancelled: { icon: XCircle, label: "Cancelled", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-500/10" },
   skipped: { icon: Clock, label: "Skipped", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-500/10" },
@@ -101,7 +101,7 @@ export default function HistoryPage() {
           {tickets.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-accent/30 dark:text-white/30 h-64 mt-10">
               <TicketSlash className="w-14 h-14 mb-4 text-accent/30 dark:text-white/30" />
-              <p className="text-xl font-bold">You haven't queued yet.</p>
+              <p className="text-xl font-bold">You haven&apos;t queued yet.</p>
               <p className="text-sm mt-1">Join a queue to see your history here.</p>
             </div>
           ) : (

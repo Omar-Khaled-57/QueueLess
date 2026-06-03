@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, startTransition, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { authAPI, type User } from "@/lib/api";
 
@@ -26,14 +26,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const stored = localStorage.getItem("ql_token");
     if (stored) {
       authAPI.me(stored)
-        .then(({ user }) => { setUser(user); setToken(stored); })
-        .catch(() => {
+        .then(({ user }) => startTransition(() => { setUser(user); setToken(stored); }))
+        .catch(() => startTransition(() => {
           localStorage.removeItem("ql_token");
           localStorage.removeItem("ql_refresh_token");
-        })
-        .finally(() => setLoading(false));
+        }))
+        .finally(() => startTransition(() => setLoading(false)));
     } else {
-      setLoading(false);
+      startTransition(() => setLoading(false));
     }
   }, []);
 

@@ -75,11 +75,9 @@ export default function Navigation() {
         <div className="p-4 border-t border-primary/5 dark:border-white/5 space-y-2 bg-white dark:bg-[#1A1A1A]">
           <div className="flex items-center gap-3 px-4 py-3 mb-2 rounded-2xl bg-cream dark:bg-[#111]">
             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-black shadow-sm overflow-hidden">
-              {user.avatar_url ? (
-                <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-              ) : (
-                user.name.charAt(0).toUpperCase()
-              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              {user.avatar_url ? <img src={user.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                : user.name.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold text-accent dark:text-white truncate">{user.name}</p>

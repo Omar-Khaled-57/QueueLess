@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  LayoutDashboard, Users, BarChart3,
+  Users, BarChart3,
   PhoneCall, SkipForward, UserX, ChevronRight,
   TrendingUp, Clock, CheckCircle, AlertCircle, Bell
 } from "lucide-react";

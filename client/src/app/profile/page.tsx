@@ -11,7 +11,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useRouter } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import ThemeLangToggle from "@/components/ThemeLangToggle";
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { authAPI, businessAPI, notificationsAPI, type Notification, type Business } from "@/lib/api";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -22,7 +22,7 @@ export default function ProfilePage() {
   const { theme, toggleTheme } = useTheme();
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [avatarSrc, setAvatarSrc] = useState<string | null>(null);
+  const [avatarSrc, setAvatarSrc] = useState<string | null>(user?.avatar_url ?? null);
   
   // Profile Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -35,19 +35,12 @@ export default function ProfilePage() {
 
   // Business State (for admin/business accounts)
   const [business, setBusiness] = useState<Business | null>(null);
-  const [businessImage, setBusinessImage] = useState<string | null>(null);
   const businessFileInputRef = useRef<HTMLInputElement>(null);
 
   // Notification State
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isNotifModalOpen, setIsNotifModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (user?.avatar_url) {
-      setAvatarSrc(user.avatar_url);
-    }
-  }, [user]);
 
   useEffect(() => {
     if (token) {
@@ -68,7 +61,6 @@ export default function ProfilePage() {
           const myBiz = businesses.find(b => b.owner_id === user.id);
           if (myBiz) {
             setBusiness(myBiz);
-            if (myBiz.image_url) setBusinessImage(myBiz.image_url);
           }
         })
         .catch(console.error);
@@ -129,7 +121,6 @@ export default function ProfilePage() {
       reader.onloadend = async () => {
         try {
           const compressed = await compressImage(reader.result as string);
-          setBusinessImage(compressed);
           const res = await businessAPI.update(business.id, { image_url: compressed }, token);
           setBusiness(res.business);
         } catch (err) {
@@ -171,7 +162,7 @@ export default function ProfilePage() {
   };
 
   type MenuItem = {
-    icon: any;
+    icon: React.ElementType;
     label: string;
     badge: string | null;
     isToggle?: boolean;
@@ -229,13 +220,11 @@ export default function ProfilePage() {
                 onClick={handleAvatarClick}
                 className="w-28 h-28 bg-white dark:bg-[#1a1a1a] rounded-3xl shadow-xl flex items-center justify-center cursor-pointer overflow-hidden border-4 border-white dark:border-[#1a1a1a] ring-2 ring-primary/20"
               >
-                {avatarSrc ? (
-                  <img src={avatarSrc} alt="Avatar" className="w-full h-full object-cover" />
-                ) : (
-                  <span className="text-4xl font-black text-primary select-none">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {avatarSrc ? <img src={avatarSrc} alt="Avatar" className="w-full h-full object-cover" />
+                  : <span className="text-4xl font-black text-primary select-none">
                     {user?.name?.[0]?.toUpperCase() || "U"}
-                  </span>
-                )}
+                  </span>}
               </motion.div>
               <button
                 onClick={handleAvatarClick}

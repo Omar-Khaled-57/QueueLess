@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { CheckCircle, Clock, Users, Share2, Home, Download } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { ticketAPI, type Ticket } from "@/lib/api";
 import { Loader2 } from "lucide-react";
@@ -48,18 +48,12 @@ export default function TicketConfirmPage() {
 
   useEffect(() => {
     if (!token) {
-      setLoading(false);
+      startTransition(() => setLoading(false));
       return;
     }
     ticketAPI.myActive(token).then((res) => {
-      // Just showing active ticket for now
-      if (res.ticket && res.ticket.ticket_number.toString() === id) {
-        setTicket(res.ticket);
-      } else {
-        // Fallback or error matching
-        setTicket(res.ticket);
-      }
-    }).catch(console.error).finally(() => setLoading(false));
+      startTransition(() => setTicket(res.ticket));
+    }).catch(console.error).finally(() => startTransition(() => setLoading(false)));
   }, [token, id]);
 
   const ticketId = `#${String(id).padStart(3, "0")}`;
@@ -165,7 +159,7 @@ export default function TicketConfirmPage() {
 
       {/* Bottom note */}
       <p className="mt-6 text-accent/30 text-xs font-medium text-center">
-        We'll notify you when your turn is close 🔔
+        We&apos;ll notify you when your turn is close 🔔
       </p>
     </div>
   );

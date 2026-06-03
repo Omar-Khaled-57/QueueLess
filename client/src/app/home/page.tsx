@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, MapPin, Clock, Users, Star, ChevronRight,
-  Bell, User, Home, History, Settings, Zap, Loader2
+  Bell, User, Zap, Loader2
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -113,11 +113,9 @@ export default function CustomerDashboard() {
                 )}
               </button>
               <Link href="/profile" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center overflow-hidden hover:bg-white/30 transition-colors border-2 border-transparent hover:border-white/20">
-                {user?.avatar_url ? (
-                  <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                ) : (
-                  <User className="w-5 h-5 text-white" />
-                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {user?.avatar_url ? <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                  : <User className="w-5 h-5 text-white" />}
               </Link>
             </div>
           </div>

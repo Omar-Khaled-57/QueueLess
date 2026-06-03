@@ -1,10 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowLeft, Clock, Users, CheckCircle, PhoneCall, SkipForward, XCircle, Zap, Loader2 } from "lucide-react";
+import { ArrowLeft, Clock, Users, CheckCircle, PhoneCall, XCircle, Zap, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition, useCallback } from "react";
 import { io, Socket } from "socket.io-client";
 import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -30,29 +30,27 @@ export default function QueuePage() {
   
   const { t, dir, locale } = useTranslation();
 
-  const fetchState = async () => {
+  const fetchState = useCallback(async () => {
     if (!id) return;
     try {
-      // Assuming a business id is passed in URL for now, let's fetch its default queue
-      // Wait, dashboard passes business.id. Let's fetch business and its queues.
       const bizRes = await businessAPI.get(Number(id));
-      setBusiness(bizRes.business);
-      const q = bizRes.queues[0]; // pick first queue
+      startTransition(() => setBusiness(bizRes.business));
+      const q = bizRes.queues[0];
       if (q) {
-        setQueueInfo(q);
+        startTransition(() => setQueueInfo(q));
         const tixRes = await queueAPI.tickets(q.id, selectedDate);
-        setTickets(tixRes.tickets);
+        startTransition(() => setTickets(tixRes.tickets));
       }
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      startTransition(() => setLoading(false));
     }
-  };
+  }, [id, selectedDate]);
 
   useEffect(() => {
     fetchState();
-  }, [id, selectedDate]);
+  }, [fetchState]);
 
   useEffect(() => {
     if (!queueInfo) return;
@@ -70,7 +68,7 @@ export default function QueuePage() {
       socket.emit("leave_queue_room", queueInfo.id.toString());
       socket.disconnect();
     };
-  }, [queueInfo?.id]);
+  }, [queueInfo, selectedDate]);
 
   const serving = tickets.find((t) => t.status === "serving");
   const waiting = tickets.filter((t) => t.status === "waiting" || (user && t.user_id === user.id));

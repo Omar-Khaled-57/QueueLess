@@ -6,7 +6,7 @@ import {
   Plus, ChevronRight, Loader2, CheckCircle, XCircle, Zap
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, startTransition, useCallback } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { queueAPI, businessAPI, type Business, type Queue, type Ticket } from "@/lib/api";
 import Navigation from "@/components/Navigation";
@@ -35,13 +35,13 @@ export default function QueueListPage() {
   const [newAvgTime, setNewAvgTime] = useState("10");
   const [creating, setCreating] = useState(false);
 
-  const loadQueues = async () => {
+  const loadQueues = useCallback(async () => {
     if (!user || !token) return;
     try {
       const { businesses } = await businessAPI.list();
       const myBiz = businesses.find(b => b.owner_id === user.id);
-      if (!myBiz) return;
-      setBusiness(myBiz);
+      if (!myBiz) { startTransition(() => setLoading(false)); return; }
+      startTransition(() => setBusiness(myBiz));
       const bizRes = await businessAPI.get(myBiz.id);
       const enriched = await Promise.all(
         bizRes.queues.map(async (q) => {
@@ -54,15 +54,15 @@ export default function QueueListPage() {
           };
         })
       );
-      setQueues(enriched);
+      startTransition(() => setQueues(enriched));
     } catch (err) {
       console.error(err);
     } finally {
-      setLoading(false);
+      startTransition(() => setLoading(false));
     }
-  };
+  }, [user, token]);
 
-  useEffect(() => { loadQueues(); }, [user, token]);
+  useEffect(() => { loadQueues(); }, [user, token, loadQueues]);
 
   // Live socket updates for all queues
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function QueueListPage() {
       return s;
     });
     return () => sockets.forEach(s => s.disconnect());
-  }, [queues.map(q => q.id).join(",")]);
+  }, [queues, loadQueues]);
 
   const handleToggle = async (q: QueueWithStats) => {
     if (!token) return;
