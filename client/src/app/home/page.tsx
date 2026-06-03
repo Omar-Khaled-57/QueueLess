@@ -91,9 +91,7 @@ export default function CustomerDashboard() {
           <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
           <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-secondary/20" />
           <div className="flex justify-end mb-2 relative z-10">
-            <div className="q">
-              <ThemeLangToggle />
-            </div>
+            <ThemeLangToggle />
           </div>
           <div className="flex items-center justify-between relative z-10">
             <div>

@@ -11,14 +11,14 @@ import { useLanguage } from "@/context/LanguageContext";
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
 
-function Toggle({ on, onToggle, dir }: { on: boolean; onToggle: () => void; dir: string }) {
+function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
   return (
     <button
       onClick={onToggle}
       aria-pressed={on}
-      className={`relative w-12 h-7 flex items-center rounded-full p-1 transition-colors shrink-0 ${on ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
+      className={`relative w-11 h-6 flex items-center rounded-full p-0.5 transition-colors shrink-0 ${on ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
     >
-      <div className={`bg-white w-5 h-5 rounded-full shadow-sm transition-transform ${on ? (dir === 'rtl' ? '-translate-x-5' : 'translate-x-5') : 'translate-x-0'}`} />
+      <div className={`bg-white w-5 h-5 rounded-full shadow-sm transition-transform ${on ? 'ltr:translate-x-full rtl:-translate-x-full' : 'translate-x-0'}`} />
     </button>
   );
 }
@@ -126,7 +126,7 @@ export default function SettingsPage() {
                         {label}
                       </span>
                       {toggle && onToggle && (
-                        <Toggle on={value ?? false} onToggle={onToggle} dir={dir} />
+                        <Toggle on={value ?? false} onToggle={onToggle} />
                       )}
                       {badge && !toggle && (
                         <span className="bg-primary/10 text-primary text-xs font-black px-3 py-1 rounded-full">

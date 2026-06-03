@@ -147,9 +147,7 @@ export default function AdminDashboard() {
           <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10" />
           {/* Top-right toggles */}
           <div className="flex justify-end mb-4 relative z-10">
-            <div className="[&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white">
-              <ThemeLangToggle />
-            </div>
+            <ThemeLangToggle />
           </div>
           <div className="flex items-center justify-between relative z-10">
             <div>

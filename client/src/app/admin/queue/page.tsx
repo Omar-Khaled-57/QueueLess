@@ -131,9 +131,7 @@ export default function QueueListPage() {
 
           {/* Toggles */}
           <div className="flex justify-end mb-4 relative z-10">
-            <div className="[&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white">
-              <ThemeLangToggle />
-            </div>
+            <ThemeLangToggle />
           </div>
 
           <div className="flex items-center justify-between relative z-10">

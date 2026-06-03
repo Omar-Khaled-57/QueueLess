@@ -103,9 +103,7 @@ export default function AnalyticsPage() {
           <div className="absolute -top-8 -right-8 w-36 h-36 rounded-full bg-white/10" />
           {/* Top-right toggles */}
           <div className="flex justify-end mb-4 relative z-10">
-            <div className="[&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white">
-              <ThemeLangToggle />
-            </div>
+            <ThemeLangToggle />
           </div>
           <div className="flex items-center gap-4 relative z-10">
             <Link href="/admin" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
