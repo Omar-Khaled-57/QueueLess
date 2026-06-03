@@ -78,7 +78,7 @@ export default function HistoryPage() {
               <p className="text-white/70 text-sm font-medium">Your Activity</p>
               <h1 className="text-white text-3xl font-bold">{t("history")}</h1>
             </div>
-            <div className="[&>div]:bg-white/10 [&>div]:border-white/20 dark:hover:text-black>
+            <div className="[&>div]:bg-white/10 [&>div]:border-white/20 dark:hover:text-black">
               <ThemeLangToggle />
             </div>
           </div>
