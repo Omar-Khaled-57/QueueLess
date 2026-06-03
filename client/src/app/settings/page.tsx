@@ -16,7 +16,7 @@ function Toggle({ on, onToggle }: { on: boolean; onToggle: () => void }) {
     <button
       onClick={onToggle}
       aria-pressed={on}
-      className={`relative w-11 h-6 flex items-center rounded-full p-0.5 transition-colors shrink-0 ${on ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
+      className={`relative w-11 h-7 flex items-center rounded-full p-0.5 transition-colors shrink-0 ${on ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
     >
       <div className={`bg-white w-5 h-5 rounded-full shadow-sm transition-transform ${on ? 'ltr:translate-x-full rtl:-translate-x-full' : 'translate-x-0'}`} />
     </button>
