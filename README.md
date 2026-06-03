@@ -1,109 +1,149 @@
-# QueueLess 🚀
+# QueueLess
 
-> **My First Ever Complete Full-Stack Project.**
-> 
-> QueueLess is a dynamic, fully-featured digital queuing and appointment scheduling platform. Built with a modern full-stack architecture, it empowers businesses to completely eliminate physical line-ups through a real-time ticketing engine, notification schedulers, and a responsive UI.
+> Smart Queue & Appointment System — Eliminate physical waiting lines with a real-time digital queue system. Join remotely, track your turn live, and save hours of time.
 
 ---
 
-## 🌟 Overview & Simulation Disclaimer
+## Tech Stack
 
-QueueLess is designed as a **dynamic simulation** of real-world service environments. 
-- **The Simulation**: The queuing logic, real-time wait-time calculations, and notification triggers are accurately modeled and function as they would in a production environment.
-- **The Data**: Please note that all businesses (e.g., "Big Koshary Time!") and personas (e.g., "Uncle Johnny") are **entirely fictional** and used for demonstration purposes.
-
----
-
-## 🛠 Technology Stack
-
-- **Frontend**: Next.js (App Router), React, Tailwind CSS, Framer Motion
-- **Backend**: Node.js, Express, Socket.IO (Real-time), node-cron (Background jobs)
-- **Database**: PostgreSQL
-- **State Management**: React Context API & Custom Hooks
+- **Frontend**: Next.js 16 (App Router), React 19, Tailwind CSS v4, Framer Motion
+- **Backend**: Node.js, Express, Socket.IO (real-time), node-cron (background jobs)
+- **Database**: PostgreSQL via Supabase
+- **State Management**: React Context API + Custom Hooks
+- **i18n**: Custom lightweight system (EN/AR with RTL support)
 
 ---
 
-## 🚀 Key Features
+## Features
 
-- **Real-time Queue Updates**: Powered by WebSockets to broadcast ticket progress and service alerts live.
-- **Intelligent Wait-Time Engine**: Background jobs calculate estimated wait times based on live service averages.
-- **Future Date Scheduling**: Book appointments for upcoming dates based on business operating schedules.
-- **Multi-lingual & Themed**: Full support for English/Arabic (RTL) and Light/Dark modes.
-- **Admin Command Center**: Real-time analytics, queue control (calling next, skipping), and business management.
+- **Real-time Queue Updates**: WebSocket-powered live ticket progress and service alerts
+- **Intelligent Wait-Time Engine**: Background jobs compute estimated wait times from live service averages
+- **Future Date Scheduling**: Book appointments on upcoming dates based on business operating schedules
+- **Multi-lingual & Themed**: Full English/Arabic (RTL) support + Light/Dark mode
+- **Admin Command Center**: Real-time analytics, queue control (call next, skip), business management
+- **PWA Ready**: Installable web app with manifest, icons, and offline support
+- **Responsive Design**: Mobile-first layout with portrait/landscape optimization
 
 ---
 
-## ⚙️ Getting Started
+## Local Demonstration
 
-### 1. Prerequisites
-- [Node.js](https://nodejs.org/) (v18+)
-- [PostgreSQL](https://www.postgresql.org/)
+### Prerequisites
+- [Node.js](https://nodejs.org/) v18+
+- A [Supabase](https://supabase.com) project (free tier works)
 
-### 2. Database Installation
-1. Create a new database in PostgreSQL named `queueless`.
-2. Run the schema file to set up tables:
+### Setup
+
+1. **Clone and install dependencies**
    ```bash
-   psql -U postgres -d queueless -f server/db/schema.sql
+   git clone <repo-url>
+   cd QueueLess
+
+   # Backend
+   cd server
+   npm install
+
+   # Frontend
+   cd ../client
+   npm install
    ```
 
-### 3. Environment Configuration
-Create a `.env` file in the `server` directory based on the `.env.example`:
-```bash
-cp server/.env.example server/.env
-```
-Update the `DATABASE_URL` in `.env` to match your local PostgreSQL credentials.
+2. **Configure environment**
 
-### 4. Seeding Mock Data
-Pre-fill the simulation with mock users, businesses, and historical records:
-```bash
-cd server
-npm install
-npx ts-node db/seed_egypt.ts
-```
+   Backend (`server/.env`):
+   ```env
+   PORT=4000
+   SUPABASE_URL=https://your-project.supabase.co
+   SUPABASE_SERVICE_KEY=your-service-role-key
+   JWT_SECRET=your-jwt-secret
+   CLIENT_URL=http://localhost:3000
+   ```
 
-### 5. Running the Application
-Open two terminals:
+   Frontend (`client/.env`):
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:4000
+   ```
 
-**Terminal 1 (Backend)**:
-```bash
-cd server
-npm run dev
-```
+3. **Run database migrations**
 
-**Terminal 2 (Frontend)**:
-```bash
-cd client
-npm install
-npm run dev
-```
+   Execute the schema against your Supabase project (via SQL editor or migration tool):
+   - `server/db/schema.sql` — core tables
+   - `server/db/seed_egypt.sql` — mock data (users, businesses, queues)
 
-The application will be accessible at [http://localhost:3000](http://localhost:3000).
+4. **Start the application**
 
----
+   Terminal 1 (Backend):
+   ```bash
+   cd server
+   npm run dev
+   ```
 
-## 👥 Mock Accounts
+   Terminal 2 (Frontend):
+   ```bash
+   cd client
+   npm run dev
+   ```
 
-All mock accounts listed below share the same default password: `password123`.
-
-### Business Administrators (Access to `/admin`)
-These accounts own simulated businesses and can actively control queue pacing:
-
-| Name | Email | Business |
-| :--- | :--- | :--- |
-| **Uncle Johnny** | `abu@koshary.com` | Big Koshary Time! |
-| **John Rabbit** | `rabie@clinic.com` | Dr. Rabbioid Clinic |
-| **Jouhn Zenin** | `afaf@mogamma.gov.eg` | The Bureau of Stamps |
-
-### Regular Customers (Access to `/dashboard`)
-These accounts can browse queues, schedule tickets, and view history:
-
-- `bassem@user.com`
-- `helmy@user.com`
-- `mona@user.com`
-- `mo@user.com`
+5. Open [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🏗 Architecture Details
+## Online Demonstration
 
-QueueLess utilizes a specialized `notified_events` tracking system within tickets to prevent redundant alerts. It employs a **Background Notification Engine** that checks for upcoming appointments and delivers alerts via cron jobs. The frontend remains "hydrated" and synchronized with the backend state via a custom WebSocket implementation.
+The application is deployed at:
+
+| Service   | URL                                                              |
+|-----------|------------------------------------------------------------------|
+| Frontend  | [queue-less-nu.vercel.app](https://queue-less-nu.vercel.app)     |
+| Backend   | `queueless-production-9faa.up.railway.app`                       |
+
+### Test Accounts
+
+All accounts use password: `password123`
+
+**Business Administrators** (access `/admin`):
+
+| Name            | Email               | Business              |
+|-----------------|---------------------|-----------------------|
+| Uncle Johnny    | abu@koshary.com     | Big Koshary Time!     |
+| John Rabbit     | rabie@clinic.com    | Dr. Rabbioid Clinic   |
+| Jouhn Zenin     | afaf@mogamma.gov.eg | The Bureau of Stamps   |
+
+**Regular Customers** (access `/home`):
+
+| Email              |
+|--------------------|
+| bassem@user.com    |
+| helmy@user.com     |
+| mona@user.com      |
+| mo@user.com        |
+
+### Navigation Flow
+
+1. **Landing Page** (`/`) — Overview with feature grid, get started / sign in
+2. **Login/Register** — Create account or use mock accounts above
+3. **Customer Dashboard** (`/home`) — Browse businesses by category, search, join queues
+4. **Queue Page** (`/queue/[id]`) — View live queue, join with date selection, track position
+5. **Ticket Confirmation** (`/ticket/[id]`) — View ticket details with QR-like code
+6. **History** (`/history`) — Past tickets with status, wait times, re-join option
+7. **Profile** (`/profile`) — Edit name/phone/city/address, upload avatar, notification preferences
+8. **Settings** (`/settings`) — Theme toggle, language toggle, notification settings
+9. **Admin Dashboard** (`/admin`) — Real-time queue control, call next, skip, no-show
+10. **Admin Queue Management** (`/admin/queue`) — Create/close queues, monitor live
+11. **Admin Analytics** (`/admin/analytics`) — Peak hours chart, weekly trends, health score
+
+### Language & Theme
+
+Click the toggle (top-right) to switch between:
+- **English / العربية** — Full RTL support for Arabic
+- **Light / Dark** — Persisted to localStorage
+
+---
+
+## Architecture Notes
+
+- **Real-time**: Socket.IO broadcasts `queue:update` events; frontend joins per-queue rooms
+- **Background Jobs**: `node-cron` checks for upcoming appointments and sends notifications
+- **Notification Tracking**: `notified_events` table prevents duplicate alerts
+- **Authentication**: JWT-based with protected routes; Supabase for user management
+- **Error Handling**: Custom 404 page, error boundary with retry, API error sanitization (no raw DB leaks)
