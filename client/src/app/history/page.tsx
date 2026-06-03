@@ -10,7 +10,7 @@ import Navigation from "@/components/Navigation";
 import ThemeLangToggle from "@/components/ThemeLangToggle";
 import { useTranslation } from "@/hooks/useTranslation";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, startTransition } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { ticketAPI, type Ticket } from "@/lib/api";
 
@@ -39,14 +39,14 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (token) {
-      ticketAPI.myHistory(token)
-        .then((res) => setTickets(res.tickets))
-        .catch(console.error)
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+    if (!token) {
+      startTransition(() => setLoading(false));
+      return;
     }
+    ticketAPI.myHistory(token)
+      .then((res) => startTransition(() => setTickets(res.tickets)))
+      .catch(console.error)
+      .finally(() => startTransition(() => setLoading(false)));
   }, [token]);
 
   const stats = {

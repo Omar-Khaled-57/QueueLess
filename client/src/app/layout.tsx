@@ -66,6 +66,13 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  alternates: {
+    languages: {
+      en: SITE_URL,
+      ar: SITE_URL,
+      "x-default": SITE_URL,
+    },
+  },
 };
 
 export default function RootLayout({

@@ -63,6 +63,7 @@ export default function Login() {
         <div className="bg-primary p-10 arch-header text-white flex flex-col gap-4 shrink-0">
           <Link
             href="/"
+            aria-label={t("back_to_home")}
             className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
           >
             <ArrowLeft className={`w-5 h-5 text-white ${dir === "rtl" ? "rotate-180" : ""}`} />

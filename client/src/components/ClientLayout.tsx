@@ -15,6 +15,13 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
+  // Register service worker
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+  }, []);
+
   // Redirect unauthenticated users to landing page
   useEffect(() => {
     if (!loading && !user && !PUBLIC_ROUTES.includes(pathname)) {

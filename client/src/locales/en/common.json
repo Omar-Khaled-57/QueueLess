@@ -209,5 +209,9 @@
   "collecting_data": "Collecting data…",
   "great_performance": "Great performance today 🎉",
   "doing_well": "Doing well, keep it up 👍",
-  "needs_attention": "Needs attention today ⚠️"
+  "needs_attention": "Needs attention today ⚠️",
+  "close": "Close",
+  "mark_no_show": "Mark as no-show",
+  "change_avatar": "Change avatar",
+  "back_to_dashboard": "Back to dashboard"
 }

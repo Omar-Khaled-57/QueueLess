@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, startTransition, ReactNode } from "react";
 
 type Locale = "en" | "ar";
 
@@ -12,16 +12,13 @@ type LanguageContextType = {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-function getLocaleSnapshot(): Locale {
-  if (typeof window === "undefined") return "en";
-  return (localStorage.getItem("ql_locale") as Locale) || "en";
-}
+
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [locale, setLocale] = useState<Locale>("en");
   useEffect(() => {
     const saved = localStorage.getItem("ql_locale") as Locale | null;
-    if (saved) setLocale(saved);
+    if (saved) startTransition(() => setLocale(saved));
   }, []);
   useEffect(() => {
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";

@@ -209,5 +209,9 @@
   "collecting_data": "جمع البيانات…",
   "great_performance": "أداء رائع اليوم 🎉",
   "doing_well": "أداء جيد، استمر 👍",
-  "needs_attention": "يحتاج متابعة اليوم ⚠️"
+  "needs_attention": "يحتاج متابعة اليوم ⚠️",
+  "close": "إغلاق",
+  "mark_no_show": "تسجيل عدم حضور",
+  "change_avatar": "تغيير الصورة",
+  "back_to_dashboard": "العودة للوحة التحكم"
 }

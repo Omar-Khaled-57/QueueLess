@@ -106,7 +106,7 @@ export default function AnalyticsPage() {
             <ThemeLangToggle glassOnPrimary />
           </div>
           <div className="flex items-center gap-4 relative z-10">
-            <Link href="/admin" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+            <Link href="/admin" aria-label={t("back_to_dashboard")} className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
               <ArrowLeft className="w-5 h-5 text-white" />
             </Link>
             <div>

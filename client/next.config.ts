@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*?)",
         headers: [
-          { key: "Link", value: '<https://queue-less-nu.vercel.app/manifest.json>; rel="manifest"' },
+          { key: "Link", value: '<https://queue-less-nu.vercel.app/manifest.webmanifest>; rel="manifest"' },
         ],
       },
     ];

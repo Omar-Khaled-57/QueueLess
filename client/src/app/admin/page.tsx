@@ -162,6 +162,7 @@ export default function AdminDashboard() {
               </Link>
               <button
                 onClick={() => setIsNotifModalOpen(true)}
+                aria-label={t("notifications")}
                 className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors relative cursor-pointer"
               >
                 <Bell className="w-5 h-5 text-white" />
@@ -292,7 +293,7 @@ export default function AdminDashboard() {
                             </p>
                           </div>
                           {user?.role === "admin" && (
-                            <button onClick={() => noShow(ticket.id)} className="w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-xl flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors">
+                            <button onClick={() => noShow(ticket.id)} aria-label={t("mark_no_show")} className="w-8 h-8 bg-rose-50 dark:bg-rose-500/10 rounded-xl flex items-center justify-center hover:bg-rose-100 dark:hover:bg-rose-500/20 transition-colors">
                               <UserX className="w-4 h-4 text-rose-400" />
                             </button>
                           )}
@@ -386,7 +387,7 @@ export default function AdminDashboard() {
           >
             <div className="flex items-center justify-between mb-6 shrink-0">
               <h2 className="text-2xl font-black text-accent dark:text-white">{t("notifications")}</h2>
-              <button onClick={() => setIsNotifModalOpen(false)} className="text-accent/40 hover:text-accent p-2">✕</button>
+              <button onClick={() => setIsNotifModalOpen(false)} aria-label={t("close")} className="text-accent/40 hover:text-accent p-2">✕</button>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-3 -mx-2 px-2 pb-4">

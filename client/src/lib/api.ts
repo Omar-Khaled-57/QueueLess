@@ -2,7 +2,18 @@ const BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
 type FetchOptions = RequestInit & { token?: string };
 
+async function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+function getBackoffDelay(attempt: number): number {
+  const base = 500 * Math.pow(2, attempt); // 500ms, 1s, 2s, 4s...
+  const jitter = Math.random() * 250;
+  return Math.min(base + jitter, 8000);
+}
+
 async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
+  const maxRetries = 2;
   const { token, ...init } = options;
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -10,13 +21,31 @@ async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T>
   };
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${BASE}${path}`, { ...init, headers });
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch(`${BASE}${path}`, { ...init, headers });
 
-  if (res.status === 204) return {} as T;
+      if (res.status === 204) return {} as T;
 
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'API error');
-  return data as T;
+      const data = await res.json();
+      if (!res.ok) {
+        if (res.status >= 500 && attempt < maxRetries) {
+          await sleep(getBackoffDelay(attempt));
+          continue;
+        }
+        throw new Error(data.error || 'API error');
+      }
+      return data as T;
+    } catch (err) {
+      if (attempt < maxRetries) {
+        await sleep(getBackoffDelay(attempt));
+        continue;
+      }
+      throw err;
+    }
+  }
+
+  throw new Error('Unreachable');
 }
 
 export const authAPI = {

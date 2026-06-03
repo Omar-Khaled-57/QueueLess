@@ -30,7 +30,25 @@ export default function Home() {
     { icon: QrCode, title: t("smart_tickets"), desc: t("smart_tickets_desc"), color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400" },
   ];
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "QueueLess",
+    url: "https://queue-less-nu.vercel.app",
+    description: "Eliminate physical waiting lines with a smart digital queue system. Book remotely and track your turn in real-time.",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "All",
+    browserRequirements: "Requires JavaScript",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    author: { "@type": "Person", name: "Omar Khaled" },
+  };
+
   return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     <div
       className={`relative min-h-[100dvh] md:h-[100dvh] bg-background text-foreground transition-colors duration-300 selection:bg-primary/30 overflow-x-hidden md:overflow-hidden ${theme === "dark" ? "dark" : ""}`}
       dir={dir}
@@ -55,7 +73,7 @@ export default function Home() {
             transition={{ delay: 0.15, type: "spring", stiffness: 120 }}
             className="z-10 text-center"
           >
-            <h1 className="text-white text-6xl md:text-7xl font-black tracking-tight mb-3 drop-shadow-md pe-14 md:pe-0">
+            <h1 className="text-white text-6xl md:text-7xl font-black tracking-tight mb-3 drop-shadow-md">
               Queue<span className="text-sun">Less</span>
             </h1>
             <p className="text-white/80 text-xl font-medium mb-10">
@@ -153,5 +171,6 @@ export default function Home() {
         </div>
       </div>
     </div>
+    </>
   );
 }

@@ -228,6 +228,7 @@ export default function ProfilePage() {
               </motion.div>
               <button
                 onClick={handleAvatarClick}
+                aria-label={t("change_avatar")}
                 className="absolute -bottom-2 -right-2 w-9 h-9 bg-primary rounded-xl shadow-lg flex items-center justify-center hover:bg-primary-dark transition-colors"
               >
                 <Camera className="w-4 h-4 text-white" />
@@ -480,7 +481,7 @@ export default function ProfilePage() {
           >
             <div className="flex items-center justify-between mb-6 shrink-0">
               <h2 className="text-2xl font-black text-accent dark:text-white">{t("notifications")}</h2>
-              <button onClick={() => setIsNotifModalOpen(false)} className="text-accent/40 hover:text-accent p-2">✕</button>
+              <button onClick={() => setIsNotifModalOpen(false)} aria-label={t("close")} className="text-accent/40 hover:text-accent p-2">✕</button>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-3 -mx-2 px-2 pb-4">

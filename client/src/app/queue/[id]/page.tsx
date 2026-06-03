@@ -122,7 +122,7 @@ export default function QueuePage() {
         >
           <div className="absolute inset-0 bg-black/20" />
           <div className="flex items-center gap-4 relative z-10">
-            <Link href="/home" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+            <Link href="/home" aria-label={t("back_to_home")} className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
               <ArrowLeft className="w-5 h-5 text-white" />
             </Link>
             <div>
@@ -192,6 +192,7 @@ export default function QueuePage() {
                 <button
                   onClick={() => setNotify30Mins(!notify30Mins)}
                   aria-pressed={notify30Mins}
+                  aria-label={t("notify_me")}
                   className={`relative w-11 h-7 flex items-center rounded-full p-0.5 transition-colors shrink-0 ${notify30Mins ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
                   style={{ minHeight: '28px' }}
                 >

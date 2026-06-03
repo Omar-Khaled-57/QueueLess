@@ -102,6 +102,7 @@ export default function CustomerDashboard() {
               <button 
                 onClick={() => setIsNotifModalOpen(true)}
                 className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors relative cursor-pointer"
+                aria-label={t("notifications")}
               >
                 <Bell className="w-5 h-5 text-white" />
                 {unreadCount > 0 && (
@@ -110,7 +111,7 @@ export default function CustomerDashboard() {
                   </span>
                 )}
               </button>
-              <Link href="/profile" className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center overflow-hidden hover:bg-white/30 transition-colors border-2 border-transparent hover:border-white/20">
+              <Link href="/profile" aria-label={t("profile")} className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center overflow-hidden hover:bg-white/30 transition-colors border-2 border-transparent hover:border-white/20">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 {user?.avatar_url ? <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
                   : <User className="w-5 h-5 text-white" />}
@@ -283,7 +284,7 @@ export default function CustomerDashboard() {
           >
             <div className="flex items-center justify-between mb-6 shrink-0">
               <h2 className="text-2xl font-black text-accent dark:text-white">{t("notifications")}</h2>
-              <button onClick={() => setIsNotifModalOpen(false)} className="text-accent/40 hover:text-accent p-2">✕</button>
+              <button onClick={() => setIsNotifModalOpen(false)} aria-label={t("close")} className="text-accent/40 hover:text-accent p-2">✕</button>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-3 -mx-2 px-2 pb-4">
