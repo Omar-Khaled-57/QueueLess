@@ -234,6 +234,8 @@ export default function ProfilePage() {
               </button>
               <input
                 ref={fileInputRef}
+                id="avatar-upload"
+                name="avatar"
                 type="file"
                 accept="image/*"
                 onChange={handleAvatarChange}
@@ -282,6 +284,8 @@ export default function ProfilePage() {
           {/* Hidden file input for business image */}
           <input
             ref={businessFileInputRef}
+            id="business-image-upload"
+            name="business_image"
             type="file"
             accept="image/*"
             onChange={handleBusinessImageChange}
@@ -375,8 +379,11 @@ export default function ProfilePage() {
             
             <div className="space-y-4 mb-8">
               <div>
-                <label className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Name</label>
+                <label htmlFor="edit-name" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Name</label>
                 <input 
+                  id="edit-name"
+                  name="name"
+                  autoComplete="name"
                   type="text" 
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
@@ -386,8 +393,11 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Phone Number</label>
+                <label htmlFor="edit-phone" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Phone Number</label>
                 <input 
+                  id="edit-phone"
+                  name="tel"
+                  autoComplete="tel"
                   type="tel" 
                   value={editPhone}
                   onChange={(e) => setEditPhone(e.target.value)}
@@ -398,8 +408,11 @@ export default function ProfilePage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">City</label>
+                  <label htmlFor="edit-city" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">City</label>
                   <input 
+                    id="edit-city"
+                    name="city"
+                    autoComplete="address-level2"
                     type="text" 
                     value={editCity}
                     onChange={(e) => setEditCity(e.target.value)}
@@ -408,8 +421,10 @@ export default function ProfilePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Gender</label>
+                  <label htmlFor="edit-gender" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Gender</label>
                   <select
+                    id="edit-gender"
+                    name="gender"
                     value={editGender}
                     onChange={(e) => setEditGender(e.target.value)}
                     className="w-full bg-(--color-cream) dark:bg-[#0f0f0f] border-2 border-transparent focus:border-primary px-4 py-3 rounded-2xl outline-none font-bold text-accent dark:text-white transition-all"
@@ -423,8 +438,11 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Address</label>
+                <label htmlFor="edit-address" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Address</label>
                 <input 
+                  id="edit-address"
+                  name="address"
+                  autoComplete="street-address"
                   type="text" 
                   value={editAddress}
                   onChange={(e) => setEditAddress(e.target.value)}

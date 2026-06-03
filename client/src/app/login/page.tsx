@@ -78,15 +78,19 @@ export default function Login() {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               {[
-                { icon: Mail, type: "email", placeholder: t("email_placeholder"), value: email, setter: setEmail },
-                { icon: Lock, type: "password", placeholder: t("password_placeholder"), value: password, setter: setPassword },
-              ].map(({ icon: Icon, type, placeholder, value, setter }) => (
+                { icon: Mail, type: "email", id: "login-email", name: "email", autoComplete: "email", placeholder: t("email_placeholder"), value: email, setter: setEmail },
+                { icon: Lock, type: "password", id: "login-password", name: "password", autoComplete: "current-password", placeholder: t("password_placeholder"), value: password, setter: setPassword },
+              ].map(({ icon: Icon, type, id, name, autoComplete, placeholder, value, setter }) => (
                 <div key={placeholder} className="relative">
                   <div className="absolute inset-y-0 inset-s-4 flex items-center pointer-events-none">
                     <Icon className="w-5 h-5 text-accent/30 dark:text-white/25" />
                   </div>
                   <input
                     type={type}
+                    id={id}
+                    name={name}
+                    autoComplete={autoComplete}
+                    aria-label={placeholder}
                     placeholder={placeholder}
                     value={value}
                     onChange={(e) => setter(e.target.value)}

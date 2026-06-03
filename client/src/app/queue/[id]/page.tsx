@@ -166,9 +166,12 @@ export default function QueuePage() {
               <div>
                 <h2 className="font-bold text-accent/60 dark:text-white/60 text-xs uppercase tracking-widest mb-2">{t("queue_date")}</h2>
                 <input 
+                  id="queue-date"
+                  name="queue_date"
                   type="date" 
                   value={selectedDate}
                   min={new Date().toISOString().split('T')[0]}
+                  aria-label={t("queue_date")}
                   onChange={(e) => {
                     const d = new Date(e.target.value);
                     if (business?.operating_days && !business.operating_days.includes(d.getDay())) {

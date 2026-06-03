@@ -107,19 +107,23 @@ export default function Register() {
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-3">
               {[
-                  { icon: User, type: "text", placeholder: t("full_name"), value: name, setter: setName, required: true },
-                { icon: Mail, type: "email", placeholder: t("email_placeholder"), value: email, setter: setEmail, required: true },
-                { icon: Lock, type: "password", placeholder: t("password_hint"), value: password, setter: setPassword, required: true },
-                { icon: Smartphone, type: "tel", placeholder: "Phone Number", value: phone, setter: setPhone, required: false },
-                { icon: MapPin, type: "text", placeholder: "City", value: city, setter: setCity, required: false },
-                { icon: Home, type: "text", placeholder: "Address", value: address, setter: setAddress, required: false },
-              ].map(({ icon: Icon, type, placeholder, value, setter, required }) => (
+                { icon: User, type: "text", id: "reg-name", name: "name", autoComplete: "name", placeholder: t("full_name"), value: name, setter: setName, required: true },
+                { icon: Mail, type: "email", id: "reg-email", name: "email", autoComplete: "email", placeholder: t("email_placeholder"), value: email, setter: setEmail, required: true },
+                { icon: Lock, type: "password", id: "reg-password", name: "password", autoComplete: "new-password", placeholder: t("password_hint"), value: password, setter: setPassword, required: true },
+                { icon: Smartphone, type: "tel", id: "reg-phone", name: "tel", autoComplete: "tel", placeholder: "Phone Number", value: phone, setter: setPhone, required: false },
+                { icon: MapPin, type: "text", id: "reg-city", name: "city", autoComplete: "address-level2", placeholder: "City", value: city, setter: setCity, required: false },
+                { icon: Home, type: "text", id: "reg-address", name: "address", autoComplete: "street-address", placeholder: "Address", value: address, setter: setAddress, required: false },
+              ].map(({ icon: Icon, type, id, name, autoComplete, placeholder, value, setter, required }) => (
                 <div key={placeholder} className="relative">
                   <div className="absolute inset-y-0 inset-s-4 flex items-center pointer-events-none">
                     <Icon className="w-5 h-5 text-accent/30 dark:text-white/25" />
                   </div>
                   <input
                     type={type}
+                    id={id}
+                    name={name}
+                    autoComplete={autoComplete}
+                    aria-label={placeholder}
                     placeholder={placeholder}
                     value={value}
                     onChange={(e) => setter(e.target.value)}
@@ -136,8 +140,11 @@ export default function Register() {
                   <Users className="w-5 h-5 text-accent/30 dark:text-white/25" />
                 </div>
                 <select
+                  id="reg-gender"
+                  name="gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
+                  aria-label="Gender"
                   className="w-full ps-12 pe-4 py-4 rounded-2xl bg-cream dark:bg-[#111] dark:text-white border border-transparent focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-[#222] transition-all outline-none text-accent font-medium appearance-none"
                 >
                   <option value="" disabled>Select Gender (Optional)</option>

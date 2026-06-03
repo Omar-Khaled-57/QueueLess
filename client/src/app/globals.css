@@ -69,7 +69,6 @@ body {
 /* Custom Utilities */
 .glass-card {
   background: rgba(255, 255, 255, 0.1);
-  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -123,18 +122,18 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #f9167f;
+  background: #eb4899;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #eb4899;
+  background: #f9167f;
 }
 
 /* Custom Scrollbar — Firefox */
 html {
   scrollbar-width: thin;
-  scrollbar-color: #f9167f transparent;
+  scrollbar-color: #eb4899 transparent;
 }
 
 /* Remove default scrollbar-hide if not defined */

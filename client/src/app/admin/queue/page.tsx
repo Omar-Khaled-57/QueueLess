@@ -305,8 +305,11 @@ export default function QueueListPage() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-accent/50 dark:text-white/50 uppercase tracking-widest mb-2 block">Queue Name</label>
+                  <label htmlFor="queue-name" className="text-xs font-bold text-accent/50 dark:text-white/50 uppercase tracking-widest mb-2 block">Queue Name</label>
                   <input
+                    id="queue-name"
+                    name="queue_name"
+                    autoComplete="off"
                     type="text"
                     value={newQueueName}
                     onChange={e => setNewQueueName(e.target.value)}
@@ -316,8 +319,11 @@ export default function QueueListPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-accent/50 dark:text-white/50 uppercase tracking-widest mb-2 block">Avg Service Time (minutes)</label>
+                  <label htmlFor="avg-service-time" className="text-xs font-bold text-accent/50 dark:text-white/50 uppercase tracking-widest mb-2 block">Avg Service Time (minutes)</label>
                   <input
+                    id="avg-service-time"
+                    name="avg_service_time"
+                    autoComplete="off"
                     type="number"
                     value={newAvgTime}
                     onChange={e => setNewAvgTime(e.target.value)}

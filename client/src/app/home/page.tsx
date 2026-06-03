@@ -164,7 +164,11 @@ export default function CustomerDashboard() {
               <Search className="w-5 h-5 text-accent/30 dark:text-white/30" />
             </div>
             <input
+              id="search-businesses"
+              name="search"
+              autoComplete="off"
               type="text"
+              aria-label={t("search_businesses")}
               placeholder={t("search_businesses")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
