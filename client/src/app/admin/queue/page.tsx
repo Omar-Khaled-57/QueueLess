@@ -24,7 +24,7 @@ type QueueWithStats = Queue & {
 
 export default function QueueListPage() {
   const { user, token } = useAuth();
-  const { dir } = useTranslation();
+  const { t, dir } = useTranslation();
 
   const [business, setBusiness] = useState<Business | null>(null);
   const [queues, setQueues] = useState<QueueWithStats[]>([]);
@@ -140,7 +140,7 @@ export default function QueueListPage() {
                 <ArrowLeft className="w-5 h-5 text-white" />
               </Link>
               <div>
-                <p className="text-white/70 text-sm font-medium">Queue Management</p>
+                <p className="text-white/70 text-sm font-medium">{t("queue_management")}</p>
                 <h1 className="text-white text-2xl font-bold">{business?.name || "My Business"}</h1>
               </div>
             </div>
@@ -150,16 +150,16 @@ export default function QueueListPage() {
               className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-colors border border-white/20"
             >
               <Plus className="w-4 h-4" />
-              New Queue
+              {t("new_queue")}
             </motion.button>
           </div>
 
           {/* Summary Pills */}
           <div className="flex gap-3 mt-6 relative z-10">
             {[
-              { label: "Total Queues", value: queues.length },
-              { label: "Open Now", value: queues.filter(q => q.is_open).length },
-              { label: "Waiting", value: queues.reduce((s, q) => s + q.waiting, 0) },
+              { label: t("total_queues"), value: queues.length },
+              { label: t("open_now"), value: queues.filter(q => q.is_open).length },
+              { label: t("waiting"), value: queues.reduce((s, q) => s + q.waiting, 0) },
             ].map(({ label, value }) => (
               <div key={label} className="flex-1 bg-white/15 backdrop-blur rounded-2xl p-3 text-center">
                 <p className="text-white font-black text-xl leading-none">{value}</p>
@@ -193,11 +193,11 @@ export default function QueueListPage() {
                         <div className="flex items-center gap-2 mb-1">
                           <h2 className="font-black text-accent dark:text-white text-lg transition-colors">{q.name}</h2>
                           <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${q.is_open ? "bg-primary/10 text-primary" : "bg-accent/10 dark:bg-white/10 text-accent/50 dark:text-white/40"}`}>
-                            {q.is_open ? "OPEN" : "CLOSED"}
+                            {q.is_open ? t("status_open") : t("status_closed")}
                           </span>
                         </div>
                         <p className="text-accent/40 dark:text-white/40 text-sm transition-colors">
-                          ~{q.avg_service_time_min} min avg · Queue #{q.id}
+                          {t("avg_service_time", { min: q.avg_service_time_min, id: q.id })}
                         </p>
                       </div>
 
@@ -207,7 +207,7 @@ export default function QueueListPage() {
                         onClick={() => handleToggle(q)}
                         disabled={togglingId === q.id}
                         className="shrink-0 transition-colors"
-                        title={q.is_open ? "Close queue" : "Open queue"}
+                        title={q.is_open ? t("close_queue") : t("open_queue")}
                       >
                         {togglingId === q.id ? (
                           <Loader2 className="w-9 h-9 animate-spin text-primary/50" />
@@ -222,9 +222,9 @@ export default function QueueListPage() {
                     {/* Stats Row */}
                     <div className="grid grid-cols-3 gap-2 mb-4">
                       {[
-                        { icon: Users, label: "Waiting", value: q.waiting, color: "text-primary" },
-                        { icon: Zap, label: "Serving", value: q.serving, color: "text-amber-500" },
-                        { icon: Clock, label: "Avg Wait", value: `~${q.avg_service_time_min}m`, color: "text-sky-500" },
+                        { icon: Users, label: t("waiting"), value: q.waiting, color: "text-primary" },
+                        { icon: Zap, label: t("serving_label"), value: q.serving, color: "text-amber-500" },
+                        { icon: Clock, label: t("avg_wait"), value: `~${q.avg_service_time_min}${t("min")}`, color: "text-sky-500" },
                       ].map(({ icon: Icon, label, value, color }) => (
                         <div key={label} className="bg-cream dark:bg-[#111] rounded-2xl p-3 text-center transition-colors">
                           <Icon className={`w-4 h-4 ${color} mx-auto mb-1`} />
@@ -239,19 +239,18 @@ export default function QueueListPage() {
                       <div className="flex items-center gap-3 bg-primary/5 dark:bg-primary/10 border border-primary/10 rounded-2xl p-3 mb-4 transition-colors">
                         <span className="w-2 h-2 bg-primary rounded-full animate-pulse shrink-0" />
                         <p className="text-primary font-bold text-sm">
-                          Now serving <span className="font-black">#{String(serving.ticket_number).padStart(3, "0")}</span>
-                          {serving.user_name && <span className="font-normal text-primary/70"> — {serving.user_name}</span>}
+                          {t("now_serving_num", { ticket: String(serving.ticket_number).padStart(3, "0"), name: serving.user_name || "" })}
                         </p>
                       </div>
                     ) : q.is_open ? (
                       <div className="flex items-center gap-3 bg-accent/5 dark:bg-white/5 rounded-2xl p-3 mb-4 transition-colors">
                         <CheckCircle className="w-4 h-4 text-accent/20 dark:text-white/20 shrink-0" />
-                        <p className="text-accent/40 dark:text-white/40 text-sm font-bold">No one currently being served</p>
+                        <p className="text-accent/40 dark:text-white/40 text-sm font-bold">{t("no_one_serving_admin")}</p>
                       </div>
                     ) : (
                       <div className="flex items-center gap-3 bg-accent/5 dark:bg-white/5 rounded-2xl p-3 mb-4 transition-colors">
                         <XCircle className="w-4 h-4 text-accent/20 dark:text-white/20 shrink-0" />
-                        <p className="text-accent/40 dark:text-white/40 text-sm font-bold">Queue is closed</p>
+                        <p className="text-accent/40 dark:text-white/40 text-sm font-bold">{t("queue_is_closed")}</p>
                       </div>
                     )}
 
@@ -261,7 +260,7 @@ export default function QueueListPage() {
                         whileTap={{ scale: 0.98 }}
                         className="w-full bg-primary/10 dark:bg-primary/15 text-primary rounded-2xl py-3 font-bold text-sm flex items-center justify-center gap-2 hover:bg-primary/15 dark:hover:bg-primary/20 transition-colors cursor-pointer"
                       >
-                        View Live Queue
+                        {t("view_live_queue")}
                         <ChevronRight className="w-4 h-4" />
                       </motion.div>
                     </Link>
@@ -274,14 +273,14 @@ export default function QueueListPage() {
           {queues.length === 0 && (
             <div className="text-center py-20">
               <Users className="w-12 h-12 text-accent/20 dark:text-white/20 mx-auto mb-3" />
-              <p className="font-black text-accent/40 dark:text-white/40 text-lg">No queues yet</p>
-              <p className="text-accent/30 dark:text-white/30 text-sm mt-1">Create your first queue to get started.</p>
+              <p className="font-black text-accent/40 dark:text-white/40 text-lg">{t("no_queues_title")}</p>
+              <p className="text-accent/30 dark:text-white/30 text-sm mt-1">{t("no_queues_desc")}</p>
               <motion.button
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setShowCreate(true)}
                 className="mt-6 bg-primary text-white px-6 py-3 rounded-2xl font-bold text-sm"
               >
-                + Create Queue
+                {t("create_queue")}
               </motion.button>
             </div>
           )}
@@ -298,12 +297,12 @@ export default function QueueListPage() {
               exit={{ opacity: 0, y: 40, scale: 0.95 }}
               className="w-full max-w-sm bg-white dark:bg-[#1a1a1a] rounded-3xl p-6 shadow-2xl transition-colors"
             >
-              <h2 className="text-xl font-black text-accent dark:text-white mb-1">New Queue</h2>
-              <p className="text-accent/50 dark:text-white/40 text-sm mb-6">Add a new queue to your business.</p>
+              <h2 className="text-xl font-black text-accent dark:text-white mb-1">{t("new_queue")}</h2>
+              <p className="text-accent/50 dark:text-white/40 text-sm mb-6">{t("add_new_queue")}</p>
 
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="queue-name" className="text-xs font-bold text-accent/50 dark:text-white/50 uppercase tracking-widest mb-2 block">Queue Name</label>
+                  <label htmlFor="queue-name" className="text-xs font-bold text-accent/50 dark:text-white/50 uppercase tracking-widest mb-2 block">{t("queue_name_label")}</label>
                   <input
                     id="queue-name"
                     name="queue_name"
@@ -311,13 +310,13 @@ export default function QueueListPage() {
                     type="text"
                     value={newQueueName}
                     onChange={e => setNewQueueName(e.target.value)}
-                    placeholder="e.g. Main Counter, VIP Line..."
+                    placeholder={t("queue_name_placeholder")}
                     className="w-full bg-cream dark:bg-[#0f0f0f] border-2 border-transparent focus:border-primary px-4 py-3 rounded-2xl outline-none font-bold text-accent dark:text-white placeholder:font-normal placeholder:text-accent/30 dark:placeholder:text-white/30 transition-all"
                     autoFocus
                   />
                 </div>
                 <div>
-                  <label htmlFor="avg-service-time" className="text-xs font-bold text-accent/50 dark:text-white/50 uppercase tracking-widest mb-2 block">Avg Service Time (minutes)</label>
+                  <label htmlFor="avg-service-time" className="text-xs font-bold text-accent/50 dark:text-white/50 uppercase tracking-widest mb-2 block">{t("avg_service_time_label")}</label>
                   <input
                     id="avg-service-time"
                     name="avg_service_time"
@@ -337,7 +336,7 @@ export default function QueueListPage() {
                   onClick={() => setShowCreate(false)}
                   className="flex-1 py-3 rounded-2xl font-bold text-accent/60 dark:text-white/60 bg-cream dark:bg-white/5 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                 >
-                  Cancel
+                  {t("modal_cancel")}
                 </button>
                 <motion.button
                   whileTap={{ scale: 0.97 }}
@@ -345,7 +344,7 @@ export default function QueueListPage() {
                   disabled={creating || !newQueueName.trim()}
                   className="flex-1 py-3 rounded-2xl font-bold bg-primary text-white shadow-lg shadow-primary/30 disabled:opacity-50 transition-all"
                 >
-                  {creating ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : "Create"}
+                  {creating ? <Loader2 className="w-5 h-5 animate-spin mx-auto" /> : t("modal_create")}
                 </motion.button>
               </div>
             </motion.div>

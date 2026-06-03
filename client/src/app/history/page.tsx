@@ -23,12 +23,12 @@ const CARD_COLORS: Record<string, string> = {
   general:    "from-slate-400 to-slate-600",
 };
 
-const STATUS_CONFIG: Record<string, { icon: React.ElementType, label: string, color: string, bg: string }> = {
-  done: { icon: CheckCircle, label: "Completed", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-500/10" },
-  cancelled: { icon: XCircle, label: "Cancelled", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-500/10" },
-  skipped: { icon: Clock, label: "Skipped", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-500/10" },
-  waiting: { icon: Clock, label: "Waiting", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-500/10" },
-  serving: { icon: Clock, label: "Serving", color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-500/10" },
+const STATUS_CONFIG: Record<string, { icon: React.ElementType, key: "status_done" | "status_cancelled" | "status_skipped" | "status_waiting" | "status_serving", color: string, bg: string }> = {
+  done: { icon: CheckCircle, key: "status_done", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-500/10" },
+  cancelled: { icon: XCircle, key: "status_cancelled", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-500/10" },
+  skipped: { icon: Clock, key: "status_skipped", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-500/10" },
+  waiting: { icon: Clock, key: "status_waiting", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-500/10" },
+  serving: { icon: Clock, key: "status_serving", color: "text-purple-500", bg: "bg-purple-50 dark:bg-purple-500/10" },
 };
 
 
@@ -75,7 +75,7 @@ export default function HistoryPage() {
           <div className="absolute bottom-4 -left-4 w-24 h-24 rounded-full bg-secondary/25" />
           <div className="relative z-10 flex justify-between items-start">
             <div>
-              <p className="text-white/70 text-sm font-medium">Your Activity</p>
+              <p className="text-white/70 text-sm font-medium">{t("your_activity")}</p>
               <h1 className="text-white text-3xl font-bold">{t("history")}</h1>
             </div>
             <div>
@@ -86,9 +86,9 @@ export default function HistoryPage() {
           {/* Mini Stats */}
           <div className="flex gap-3 mt-6 relative z-10">
             {[
-              { value: stats.total, label: "Total Visits" },
-              { value: stats.completed, label: "Completed" },
-              { value: stats.cancelled, label: "Cancelled" },
+              { value: stats.total, label: t("total_visits") },
+              { value: stats.completed, label: t("completed_stat") },
+              { value: stats.cancelled, label: t("cancelled_stat") },
             ].map(({ value, label }) => (
               <div key={label} className="flex-1 bg-white/20 backdrop-blur rounded-2xl p-3 text-center">
                 <p className="text-white font-black text-xl leading-none">{value}</p>
@@ -103,8 +103,8 @@ export default function HistoryPage() {
           {tickets.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-accent/30 dark:text-white/30 h-64 mt-10">
               <TicketSlash className="w-14 h-14 mb-4 text-accent/30 dark:text-white/30" />
-              <p className="text-xl font-bold">You haven&apos;t queued yet.</p>
-              <p className="text-sm mt-1">Join a queue to see your history here.</p>
+              <p className="text-xl font-bold">{t("no_history_title")}</p>
+              <p className="text-sm mt-1">{t("no_history_desc")}</p>
             </div>
           ) : (
             <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:mt-6">
@@ -137,24 +137,24 @@ export default function HistoryPage() {
                           </div>
                           <span className={`text-xs font-black px-3 py-1 rounded-full shrink-0 ${cfg.bg} ${cfg.color} flex items-center gap-1 transition-colors border border-[currentColor]/10`}>
                             <Icon className="w-3 h-3" />
-                            {cfg.label}
+                            {t(cfg.key)}
                           </span>
                         </div>
 
                         <div className="flex items-center gap-4 mt-4">
                           <div className="bg-cream dark:bg-[#2a2a2a] transition-colors rounded-xl px-3 py-2">
-                            <p className="text-accent/40 dark:text-white/40 transition-colors text-[10px] font-bold uppercase tracking-wider">Ticket</p>
+                            <p className="text-accent/40 dark:text-white/40 transition-colors text-[10px] font-bold uppercase tracking-wider">{t("ticket_label")}</p>
                             <p className="text-accent dark:text-white transition-colors font-black text-sm">#{String(item.ticket_number).padStart(3, '0')}</p>
                           </div>
                           <div className="bg-cream dark:bg-[#2a2a2a] transition-colors rounded-xl px-3 py-2">
-                            <p className="text-accent/40 dark:text-white/40 transition-colors text-[10px] font-bold uppercase tracking-wider">Wait Time</p>
+                            <p className="text-accent/40 dark:text-white/40 transition-colors text-[10px] font-bold uppercase tracking-wider">{t("wait_time_label")}</p>
                             <p className="text-accent dark:text-white transition-colors font-black text-sm">{getWaitTime(item)}</p>
                           </div>
                           {item.status === "done" && (
                             <Link href={`/queue/${item.queue_id}`} className="ml-auto">
                               <div className="flex items-center gap-1 text-primary text-xs font-black">
                                 <RotateCcw className="w-3.5 h-3.5" />
-                                Again
+                                {t("again")}
                               </div>
                             </Link>
                           )}

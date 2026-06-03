@@ -139,7 +139,7 @@ export default function Login() {
 
         {/* Footer */}
         <div className="text-center pb-6 text-accent/20 dark:text-white/15 text-xs font-bold uppercase tracking-widest">
-          Secured by JWT
+          {t("secured_by_jwt")}
         </div>
       </motion.div>
     </div>

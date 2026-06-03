@@ -129,8 +129,7 @@ router.patch('/:id', authenticate, requireAdmin, async (req: Request, res: Respo
     res.json({ business });
   } catch (err) {
     console.error('Business PATCH error:', err);
-    const message = err instanceof Error ? err.message : 'Internal server error';
-    res.status(500).json({ error: message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 

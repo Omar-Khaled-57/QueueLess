@@ -13,7 +13,7 @@ import { businessAPI, ticketAPI, notificationsAPI, getBusinessImage, type Busine
 import Navigation from "@/components/Navigation";
 import ThemeLangToggle from "@/components/ThemeLangToggle";
 
-const CATEGORIES = ["All", "Clinic", "Bank", "Lab", "Government", "Pharmacy"];
+const CATEGORIES = ["all", "clinic", "bank", "lab", "government", "pharmacy"] as const;
 
 const CARD_COLORS: Record<string, string> = {
   clinic:     "from-pink-400 to-rose-500",
@@ -27,7 +27,7 @@ const CARD_COLORS: Record<string, string> = {
 export default function CustomerDashboard() {
   const { user, token } = useAuth();
   const { t, dir } = useTranslation();
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState("all");
   const [search, setSearch] = useState("");
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [activeTicket, setActiveTicket] = useState<Ticket | null>(null);
@@ -69,7 +69,7 @@ export default function CustomerDashboard() {
   };
 
   const filtered = businesses.filter((b) => {
-    const matchCat = activeCategory === "All" || b.category.toLowerCase() === activeCategory.toLowerCase();
+    const matchCat = activeCategory === "all" || b.category.toLowerCase() === activeCategory.toLowerCase();
     const matchSearch = b.name.toLowerCase().includes(search.toLowerCase());
     return matchCat && matchSearch;
   });
@@ -96,7 +96,7 @@ export default function CustomerDashboard() {
           <div className="flex items-center justify-between relative z-10">
             <div>
               <p className="text-white/70 text-sm font-medium">{greeting()},</p>
-              <h1 className="text-white text-2xl font-bold">{user?.name?.split(" ")[0] ?? "there"} 👋</h1>
+              <h1 className="text-white text-2xl font-bold">{user?.name?.split(" ")[0] ?? t("there_fallback")} 👋</h1>
             </div>
             <div className="flex gap-3">
               <button 
@@ -106,7 +106,7 @@ export default function CustomerDashboard() {
                 <Bell className="w-5 h-5 text-white" />
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-5 h-5 bg-sun text-accent text-[10px] font-black rounded-full flex items-center justify-center border-2 border-primary">
-                    {unreadCount > 9 ? '9+' : unreadCount}
+                    {unreadCount > 9 ? t("unread_badge") : unreadCount}
                   </span>
                 )}
               </button>
@@ -186,7 +186,7 @@ export default function CustomerDashboard() {
                     : "bg-cream dark:bg-[#1a1a1a] text-accent/50 dark:text-white/50 hover:bg-primary/10 hover:text-primary"
                 }`}
               >
-                {cat}
+                {t(cat as (typeof CATEGORIES)[number]) || cat}
               </button>
             ))}
           </div>
@@ -282,13 +282,13 @@ export default function CustomerDashboard() {
             className="bg-white dark:bg-[#1a1a1a] rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl relative flex flex-col max-h-[80vh]"
           >
             <div className="flex items-center justify-between mb-6 shrink-0">
-              <h2 className="text-2xl font-black text-accent dark:text-white">{t("notifications") || "Notifications"}</h2>
+              <h2 className="text-2xl font-black text-accent dark:text-white">{t("notifications")}</h2>
               <button onClick={() => setIsNotifModalOpen(false)} className="text-accent/40 hover:text-accent p-2">✕</button>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-3 -mx-2 px-2 pb-4">
               {notifications.length === 0 ? (
-                <div className="text-center py-10 text-accent/40 font-bold">No notifications yet!</div>
+                  <div className="text-center py-10 text-accent/40 font-bold">{t("no_notifications")}</div>
               ) : (
                 notifications.map(n => (
                   <div key={n.id} onClick={() => !n.is_read && handleMarkRead(n.id)} className={`p-4 rounded-xl border transition-colors cursor-pointer ${!n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-[var(--color-cream)] dark:bg-[#111] border-transparent'}`}>

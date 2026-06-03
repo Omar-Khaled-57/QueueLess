@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState, startTransition } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useTranslation } from "@/hooks/useTranslation";
 import { ticketAPI, type Ticket } from "@/lib/api";
 import { Loader2 } from "lucide-react";
 
@@ -43,6 +44,7 @@ function QRCodeDisplay({ value }: { value: string }) {
 export default function TicketConfirmPage() {
   const { id } = useParams<{ id: string }>();
   const { token } = useAuth();
+  const { t, dir } = useTranslation();
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -63,7 +65,7 @@ export default function TicketConfirmPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6" dir={dir}>
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -84,7 +86,7 @@ export default function TicketConfirmPage() {
             <CheckCircle className="w-9 h-9 text-primary" />
           </motion.div>
 
-          <h1 className="text-2xl font-bold relative z-10">Your ticket is confirmed!</h1>
+          <h1 className="text-2xl font-bold relative z-10">{t("ticket_confirmed")}</h1>
           <p className="text-white/70 text-sm mt-1 relative z-10">{ticket?.business_name || "Business"} • {ticket?.queue_name || "Queue"}</p>
         </div>
 
@@ -92,7 +94,7 @@ export default function TicketConfirmPage() {
         <div className="p-8 flex flex-col items-center gap-6">
           {/* Ticket Number */}
           <div className="text-center">
-            <p className="text-accent/40 dark:text-white/40 text-xs font-bold uppercase tracking-widest mb-1">Your Ticket</p>
+            <p className="text-accent/40 dark:text-white/40 text-xs font-bold uppercase tracking-widest mb-1">{t("your_ticket_label")}</p>
             <motion.p
               initial={{ scale: 0.5 }}
               animate={{ scale: 1 }}
@@ -106,7 +108,7 @@ export default function TicketConfirmPage() {
           {/* QR Code */}
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
             <QRCodeDisplay value={ticketId} />
-            <p className="text-center text-accent/30 dark:text-white/30 text-xs mt-2 font-medium">Scan to check in at the venue</p>
+            <p className="text-center text-accent/30 dark:text-white/30 text-xs mt-2 font-medium">{t("scan_to_check_in")}</p>
           </motion.div>
 
           {/* Queue Info */}
@@ -114,12 +116,12 @@ export default function TicketConfirmPage() {
               <div className="bg-cream dark:bg-[#111] rounded-2xl p-4 text-center">
                 <Users className="w-5 h-5 text-primary mx-auto mb-1" />
                 <p className="font-black text-accent dark:text-white text-lg">{ticket?.position_ahead ?? "-"}</p>
-                <p className="text-accent/40 dark:text-white/40 text-xs font-bold">Before you</p>
+                <p className="text-accent/40 dark:text-white/40 text-xs font-bold">{t("before_you")}</p>
               </div>
               <div className="bg-cream dark:bg-[#111] rounded-2xl p-4 text-center">
                 <Clock className="w-5 h-5 text-amber-500 mx-auto mb-1" />
                 <p className="font-black text-accent dark:text-white text-lg">~{(ticket?.position_ahead ?? 0) * 10}m</p>
-                <p className="text-accent/40 dark:text-white/40 text-xs font-bold">Est. wait</p>
+                <p className="text-accent/40 dark:text-white/40 text-xs font-bold">{t("est_wait_label")}</p>
               </div>
             </div>
 
@@ -133,14 +135,14 @@ export default function TicketConfirmPage() {
                 className="flex-1 bg-cream dark:bg-[#111] text-accent/60 dark:text-white/60 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-cream/80 dark:hover:bg-[#222] transition-all"
               >
                 <Share2 className="w-4 h-4" />
-                Share
+                {t("share")}
               </motion.button>
               <motion.button
                 whileTap={{ scale: 0.96 }}
                 className="flex-1 bg-cream dark:bg-[#111] text-accent/60 dark:text-white/60 py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-cream/80 dark:hover:bg-[#222] transition-all"
               >
                 <Download className="w-4 h-4" />
-                Save
+                {t("save_ticket")}
               </motion.button>
             </div>
 
@@ -151,7 +153,7 @@ export default function TicketConfirmPage() {
                 className="w-full bg-accent dark:bg-[#333] text-white py-4 rounded-2xl font-bold text-base flex items-center justify-center gap-2 shadow-lg"
               >
                 <Home className="w-5 h-5" />
-                Back to Home
+                {t("back_to_home")}
               </motion.button>
             </Link>
           </div>
@@ -159,7 +161,7 @@ export default function TicketConfirmPage() {
 
         {/* Bottom note */}
         <p className="mt-6 text-accent/30 dark:text-white/30 text-xs font-medium text-center">
-          We&apos;ll notify you when your turn is close 🔔
+          {t("notify_turn_note")}
         </p>
     </div>
   );

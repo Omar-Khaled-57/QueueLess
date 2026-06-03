@@ -385,13 +385,13 @@ export default function AdminDashboard() {
             className="bg-white dark:bg-[#1a1a1a] rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl relative flex flex-col max-h-[80vh]"
           >
             <div className="flex items-center justify-between mb-6 shrink-0">
-              <h2 className="text-2xl font-black text-accent dark:text-white">{t("notifications") || "Notifications"}</h2>
+              <h2 className="text-2xl font-black text-accent dark:text-white">{t("notifications")}</h2>
               <button onClick={() => setIsNotifModalOpen(false)} className="text-accent/40 hover:text-accent p-2">✕</button>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-3 -mx-2 px-2 pb-4">
               {notifications.length === 0 ? (
-                <div className="text-center py-10 text-accent/40 font-bold">No notifications yet!</div>
+                <div className="text-center py-10 text-accent/40 font-bold">{t("no_notifications")}</div>
               ) : (
                 notifications.map(n => (
                   <div key={n.id} onClick={() => !n.is_read && handleMarkRead(n.id)} className={`p-4 rounded-xl border transition-colors cursor-pointer ${!n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-(--color-cream) dark:bg-[#111] border-transparent'}`}>

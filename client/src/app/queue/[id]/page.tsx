@@ -98,7 +98,7 @@ export default function QueuePage() {
 
   const handleCancel = async () => {
     if (!token || !queueInfo || !myTicket) return;
-    if (!confirm("Are you sure you want to cancel your turn?")) return;
+    if (!confirm(t("cancel_turn_confirm"))) return;
     try {
       await queueAPI.cancel(queueInfo.id, myTicket.id, token);
     } catch (err) {
@@ -111,7 +111,7 @@ export default function QueuePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col md:flex-row items-start transition-colors duration-300">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row items-start transition-colors duration-300" dir={dir}>
       <Navigation />
       <div className={`w-full ${user ? "md:ms-64" : ""} min-h-screen bg-white dark:bg-[#1a1a1a] md:bg-cream md:dark:bg-background shadow-md md:shadow-none flex flex-col relative transition-all overflow-x-hidden`}>
 
@@ -175,7 +175,7 @@ export default function QueuePage() {
                   onChange={(e) => {
                     const d = new Date(e.target.value);
                     if (business?.operating_days && !business.operating_days.includes(d.getDay())) {
-                      alert("This business is closed on this day.");
+                      alert(t("closed_day_alert"));
                       return;
                     }
                     setSelectedDate(e.target.value);

@@ -26,7 +26,10 @@ const cairo = Cairo({
 const SITE_URL = "https://queue-less-nu.vercel.app";
 
 export const metadata: Metadata = {
-  title: "QueueLess — Smart Queue & Appointment System",
+  title: {
+    default: "QueueLess — Smart Queue & Appointment System",
+    template: "%s | QueueLess",
+  },
   description: "Eliminate physical waiting lines with a real-time digital queue system. Join remotely, track your turn live, and save hours of time.",
   keywords: ["queue management", "digital ticketing", "appointment scheduling", "real-time tracking", "smart queue"],
   authors: [{ name: "Omar Khaled" }],

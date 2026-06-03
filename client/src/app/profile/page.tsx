@@ -176,7 +176,7 @@ export default function ProfilePage() {
   ];
 
   if (user?.role === "admin") {
-    accountItems.splice(1, 0, { icon: Building2, label: "Business Image", badge: null });
+    accountItems.splice(1, 0, { icon: Building2, label: t("edit_business_image"), badge: null });
   }
 
   const MENU_ITEMS: { section: string, items: MenuItem[] }[] = [
@@ -263,8 +263,8 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
             {(
               [
-                { icon: Mail, value: user?.email || "No email" },
-                { icon: MapPin, value: user?.city ? `${user.city}${user.address ? `, ${user.address}` : ""}` : "No location provided" },
+                { icon: Mail, value: user?.email || t("no_email") },
+                { icon: MapPin, value: user?.city ? `${user.city}${user.address ? `, ${user.address}` : ""}` : t("no_location") },
               ] as const
             ).map(({ icon: Icon, value }, idx) => (
               <motion.div
@@ -375,11 +375,11 @@ export default function ProfilePage() {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-white dark:bg-[#1a1a1a] rounded-3xl p-6 md:p-8 w-full max-w-sm shadow-2xl relative"
           >
-            <h2 className="text-2xl font-black text-accent dark:text-white mb-6">Edit Profile</h2>
+            <h2 className="text-2xl font-black text-accent dark:text-white mb-6">{t("edit_profile")}</h2>
             
             <div className="space-y-4 mb-8">
               <div>
-                <label htmlFor="edit-name" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Name</label>
+                <label htmlFor="edit-name" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">{t("name_label")}</label>
                 <input 
                   id="edit-name"
                   name="name"
@@ -388,12 +388,12 @@ export default function ProfilePage() {
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
                   className="w-full bg-(--color-cream) dark:bg-[#0f0f0f] border-2 border-transparent focus:border-primary px-4 py-3 rounded-2xl outline-none font-bold text-accent dark:text-white transition-all"
-                  placeholder="Enter your name"
+                  placeholder={t("enter_name")}
                 />
               </div>
 
               <div>
-                <label htmlFor="edit-phone" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Phone Number</label>
+                <label htmlFor="edit-phone" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">{t("phone_label")}</label>
                 <input 
                   id="edit-phone"
                   name="tel"
@@ -402,13 +402,13 @@ export default function ProfilePage() {
                   value={editPhone}
                   onChange={(e) => setEditPhone(e.target.value)}
                   className="w-full bg-(--color-cream) dark:bg-[#0f0f0f] border-2 border-transparent focus:border-primary px-4 py-3 rounded-2xl outline-none font-bold text-accent dark:text-white transition-all"
-                  placeholder="Enter phone"
+                  placeholder={t("enter_phone")}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="edit-city" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">City</label>
+                  <label htmlFor="edit-city" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">{t("city_label")}</label>
                   <input 
                     id="edit-city"
                     name="city"
@@ -417,11 +417,11 @@ export default function ProfilePage() {
                     value={editCity}
                     onChange={(e) => setEditCity(e.target.value)}
                     className="w-full bg-(--color-cream) dark:bg-[#0f0f0f] border-2 border-transparent focus:border-primary px-4 py-3 rounded-2xl outline-none font-bold text-accent dark:text-white transition-all"
-                    placeholder="Enter city"
+                    placeholder={t("enter_city")}
                   />
                 </div>
                 <div>
-                  <label htmlFor="edit-gender" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Gender</label>
+                  <label htmlFor="edit-gender" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">{t("gender_label")}</label>
                   <select
                     id="edit-gender"
                     name="gender"
@@ -429,16 +429,16 @@ export default function ProfilePage() {
                     onChange={(e) => setEditGender(e.target.value)}
                     className="w-full bg-(--color-cream) dark:bg-[#0f0f0f] border-2 border-transparent focus:border-primary px-4 py-3 rounded-2xl outline-none font-bold text-accent dark:text-white transition-all"
                   >
-                    <option value="">Select</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
+                    <option value="">{t("select_gender")}</option>
+                    <option value="male">{t("male_option")}</option>
+                    <option value="female">{t("female_option")}</option>
+                    <option value="other">{t("other_option")}</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label htmlFor="edit-address" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">Address</label>
+                <label htmlFor="edit-address" className="block text-xs font-bold text-accent/60 dark:text-white/60 uppercase tracking-widest mb-1">{t("address_label")}</label>
                 <input 
                   id="edit-address"
                   name="address"
@@ -447,7 +447,7 @@ export default function ProfilePage() {
                   value={editAddress}
                   onChange={(e) => setEditAddress(e.target.value)}
                   className="w-full bg-(--color-cream) dark:bg-[#0f0f0f] border-2 border-transparent focus:border-primary px-4 py-3 rounded-2xl outline-none font-bold text-accent dark:text-white transition-all"
-                  placeholder="Enter address"
+                  placeholder={t("enter_address")}
                 />
               </div>
             </div>
@@ -457,14 +457,14 @@ export default function ProfilePage() {
                 onClick={() => setIsEditModalOpen(false)}
                 className="flex-1 py-3 px-4 rounded-xl font-bold text-accent/60 dark:text-white/60 bg-(--color-cream) dark:bg-white/5 hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
               >
-                Cancel
+                {t("modal_cancel")}
               </button>
               <button 
                 onClick={handleSaveProfile}
                 disabled={saving || !editName.trim()}
                 className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-primary hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
-                {saving ? "Saving..." : "Save"}
+                {saving ? t("saving") : t("save")}
               </button>
             </div>
           </motion.div>
@@ -479,13 +479,13 @@ export default function ProfilePage() {
             className="bg-white dark:bg-[#1a1a1a] rounded-3xl p-6 md:p-8 w-full max-w-md shadow-2xl relative flex flex-col max-h-[80vh]"
           >
             <div className="flex items-center justify-between mb-6 shrink-0">
-              <h2 className="text-2xl font-black text-accent dark:text-white">Notifications</h2>
+              <h2 className="text-2xl font-black text-accent dark:text-white">{t("notifications")}</h2>
               <button onClick={() => setIsNotifModalOpen(false)} className="text-accent/40 hover:text-accent p-2">✕</button>
             </div>
 
             <div className="flex-1 overflow-y-auto space-y-3 -mx-2 px-2 pb-4">
               {notifications.length === 0 ? (
-                <div className="text-center py-10 text-accent/40 font-bold">No notifications yet!</div>
+                <div className="text-center py-10 text-accent/40 font-bold">{t("no_notifications")}</div>
               ) : (
                 notifications.map(n => (
                   <div key={n.id} onClick={() => !n.is_read && handleMarkRead(n.id)} className={`p-4 rounded-2xl border transition-colors cursor-pointer ${!n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-(--color-cream) dark:bg-[#111] border-transparent'}`}>

@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import ThemeLangToggle from "@/components/ThemeLangToggle";
 
 export default function Home() {
-  const { dir, locale } = useTranslation();
+  const { t, dir } = useTranslation();
   const { theme } = useTheme();
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -24,30 +24,10 @@ export default function Home() {
   }, [user, loading, router]);
 
   const FEATURES = [
-    {
-      icon: Clock,
-      title: locale === "ar" ? "وفّر وقتك" : "Save Time",
-      desc: locale === "ar" ? "انضم إلى الطابور عن بُعد وانتظر من أي مكان." : "Join queues remotely and wait from anywhere.",
-      color: "bg-primary/10 text-primary",
-    },
-    {
-      icon: Smartphone,
-      title: locale === "ar" ? "تحديث فوري" : "Real-Time",
-      desc: locale === "ar" ? "تحديثات مباشرة فور تغيّر دورك." : "Live updates the moment your turn changes.",
-      color: "bg-sun/20 text-amber-500",
-    },
-    {
-      icon: Zap,
-      title: locale === "ar" ? "انضمام سريع" : "Instant Join",
-      desc: locale === "ar" ? "انضم لأي طابور في ثوانٍ بنقرة واحدة." : "Join any queue in seconds with one tap.",
-      color: "bg-sky-500/10 text-sky-500 dark:text-sky-400",
-    },
-    {
-      icon: QrCode,
-      title: locale === "ar" ? "تذاكر ذكية" : "Smart Tickets",
-      desc: locale === "ar" ? "تذاكر رقمية، لا حاجة للطباعة." : "Digital tickets, no printing required.",
-      color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400",
-    },
+    { icon: Clock, title: t("save_time"), desc: t("save_time_desc"), color: "bg-primary/10 text-primary" },
+    { icon: Smartphone, title: t("real_time"), desc: t("real_time_desc"), color: "bg-sun/20 text-amber-500" },
+    { icon: Zap, title: t("instant_join"), desc: t("instant_join_desc"), color: "bg-sky-500/10 text-sky-500 dark:text-sky-400" },
+    { icon: QrCode, title: t("smart_tickets"), desc: t("smart_tickets_desc"), color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400" },
   ];
 
   return (
@@ -79,7 +59,7 @@ export default function Home() {
               Queue<span className="text-sun">Less</span>
             </h1>
             <p className="text-white/80 text-xl font-medium mb-10">
-              {locale === "ar" ? "نظام الطوابير الذكي" : "Smart Queue & Appointments"}
+              {t("hero_subtitle")}
             </p>
 
             {/* Logo — circular */}
@@ -101,8 +81,8 @@ export default function Home() {
             {/* Stat pills */}
             <div className="flex gap-4 justify-center mt-8">
               {[
-                { icon: Users, label: locale === "ar" ? "+10 آلاف مستخدم" : "10k+ Users" },
-                { icon: Clock, label: locale === "ar" ? "توفير 12 ساعة" : "Avg 12hrs saved" },
+                { icon: Users, label: t("users_stat") },
+                { icon: Clock, label: t("hours_saved_stat") },
               ].map(({ icon: Icon, label }) => (
                 <div key={label} className="flex items-center gap-2 bg-white/20 backdrop-blur px-4 py-2 rounded-full text-white text-xs font-bold">
                   <Icon className="w-3.5 h-3.5" />
@@ -122,16 +102,10 @@ export default function Home() {
             className="my-auto w-full max-w-xl mx-auto"
           >
             <h2 className="text-3xl sm:text-4xl md:text-3xl lg:text-4xl xl:text-5xl font-black text-accent dark:text-white leading-[1.15] mb-2 sm:mb-3">
-              {locale === "ar" ? (
-                <>انتظر أقل، <span className="text-primary italic">عش أكثر.</span></>
-              ) : (
-                <>Wait less, <span className="text-primary italic">Live more.</span></>
-              )}
+              <>{t("wait_less")} <span className="text-primary italic">{t("live_more")}</span></>
             </h2>
             <p className="text-accent/60 dark:text-white/50 text-sm md:text-base lg:text-lg mb-6 leading-relaxed max-w-lg">
-              {locale === "ar"
-                ? "انضم للطابور عن بُعد وتابع دورك في الوقت الفعلي من أي مكان."
-                : "Join the queue remotely and track your turn in real-time from anywhere."}
+              {t("description")}
             </p>
 
             {/* Feature Grid */}
@@ -161,7 +135,7 @@ export default function Home() {
                   whileTap={{ scale: 0.98 }}
                   className="w-full bg-primary text-white py-3 sm:py-3.5 lg:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all"
                 >
-                  {locale === "ar" ? "ابدأ الآن" : "Get Started"}
+                  {t("get_started")}
                   <ArrowRight className={`w-4 h-4 sm:w-5 sm:h-5 ${dir === "rtl" ? "rotate-180" : ""}`} />
                 </motion.button>
               </Link>
@@ -171,7 +145,7 @@ export default function Home() {
                   whileTap={{ scale: 0.98 }}
                   className="w-full bg-accent text-white dark:text-black py-3 sm:py-3.5 lg:py-4 rounded-xl sm:rounded-2xl font-bold text-sm sm:text-base flex items-center justify-center gap-2 transition-all hover:opacity-90"
                 >
-                  {locale === "ar" ? "تسجيل الدخول" : "Sign In"}
+                  {t("sign_in")}
                 </motion.button>
               </Link>
             </div>

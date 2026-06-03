@@ -110,9 +110,9 @@ export default function Register() {
                 { icon: User, type: "text", id: "reg-name", name: "name", autoComplete: "name", placeholder: t("full_name"), value: name, setter: setName, required: true },
                 { icon: Mail, type: "email", id: "reg-email", name: "email", autoComplete: "email", placeholder: t("email_placeholder"), value: email, setter: setEmail, required: true },
                 { icon: Lock, type: "password", id: "reg-password", name: "password", autoComplete: "new-password", placeholder: t("password_hint"), value: password, setter: setPassword, required: true },
-                { icon: Smartphone, type: "tel", id: "reg-phone", name: "tel", autoComplete: "tel", placeholder: "Phone Number", value: phone, setter: setPhone, required: false },
-                { icon: MapPin, type: "text", id: "reg-city", name: "city", autoComplete: "address-level2", placeholder: "City", value: city, setter: setCity, required: false },
-                { icon: Home, type: "text", id: "reg-address", name: "address", autoComplete: "street-address", placeholder: "Address", value: address, setter: setAddress, required: false },
+                { icon: Smartphone, type: "tel", id: "reg-phone", name: "tel", autoComplete: "tel", placeholder: t("phone_placeholder"), value: phone, setter: setPhone, required: false },
+                { icon: MapPin, type: "text", id: "reg-city", name: "city", autoComplete: "address-level2", placeholder: t("city_placeholder"), value: city, setter: setCity, required: false },
+                { icon: Home, type: "text", id: "reg-address", name: "address", autoComplete: "street-address", placeholder: t("address_placeholder"), value: address, setter: setAddress, required: false },
               ].map(({ icon: Icon, type, id, name, autoComplete, placeholder, value, setter, required }) => (
                 <div key={placeholder} className="relative">
                   <div className="absolute inset-y-0 inset-s-4 flex items-center pointer-events-none">
@@ -144,13 +144,13 @@ export default function Register() {
                   name="gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  aria-label="Gender"
+                  aria-label={t("select_gender_optional")}
                   className="w-full ps-12 pe-4 py-4 rounded-2xl bg-cream dark:bg-[#111] dark:text-white border border-transparent focus:ring-2 focus:ring-primary focus:bg-white dark:focus:bg-[#222] transition-all outline-none text-accent font-medium appearance-none"
                 >
-                  <option value="" disabled>Select Gender (Optional)</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Prefer not to say</option>
+                  <option value="" disabled>{t("select_gender_optional")}</option>
+                  <option value="male">{t("male")}</option>
+                  <option value="female">{t("female")}</option>
+                  <option value="other">{t("prefer_not_to_say")}</option>
                 </select>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function Register() {
 
         {/* Footer */}
         <div className="text-center pb-6 text-accent/20 dark:text-white/15 text-xs font-bold uppercase tracking-widest">
-          QueueLess v1.0
+          {t("queue_less_version")}
         </div>
       </motion.div>
     </div>

@@ -39,7 +39,7 @@ export default function Navigation() {
           return (
             <Link key={label} href={href} className="flex flex-col items-center gap-1 relative">
               {active && (
-                <motion.div layoutId="navIndicator" className="absolute -top-4 w-12 h-1 bg-primary rounded-b-full" />
+                <motion.div layoutId="navIndicator" className="absolute -top-3 w-12 h-1.5 bg-primary rounded-t-full" />
               )}
               <Icon className={`w-6 h-6 transition-colors ${active ? "text-primary" : "text-accent/30 dark:text-white/30"}`} />
               <span className={`text-[10px] font-bold transition-colors ${active ? "text-primary" : "text-accent/30 dark:text-white/30"}`}>{label}</span>

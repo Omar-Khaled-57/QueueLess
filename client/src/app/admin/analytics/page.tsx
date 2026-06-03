@@ -200,7 +200,7 @@ export default function AnalyticsPage() {
               </div>
             </div>
             {weeklyData.length === 0 ? (
-              <p className="text-center text-accent/30 dark:text-white/30 py-8 font-bold text-sm">No data for the past 7 days yet.</p>
+              <p className="text-center text-accent/30 dark:text-white/30 py-8 font-bold text-sm">{t("no_data_7_days")}</p>
             ) : (
               <>
                 <div className="relative flex items-end gap-2" style={{ height: "90px" }}>
@@ -233,7 +233,7 @@ export default function AnalyticsPage() {
                   })}
                 </div>
                 <p className="text-accent/30 dark:text-white/30 text-xs text-center mt-2 font-medium transition-colors">
-                  {bestDay ? `${t("best_day")}: ${bestDay.day} (${bestDay.served} ${t("served")})` : "Collecting data…"}
+                  {bestDay ? `${t("best_day")}: ${bestDay.day} (${bestDay.served} ${t("served")})` : t("collecting_data")}
                 </p>
               </>
             )}
@@ -246,7 +246,7 @@ export default function AnalyticsPage() {
                 <p className="text-white/70 text-xs font-bold uppercase tracking-widest">{t("health_score")}</p>
                 <p className="text-5xl font-black mt-2">{healthScore}<span className="text-2xl text-white/50">/100</span></p>
                 <p className="text-white/80 text-sm mt-1 font-medium">
-                  {healthScore >= 85 ? "Great performance today 🎉" : healthScore >= 65 ? "Doing well, keep it up 👍" : "Needs attention today ⚠️"}
+                  {healthScore >= 85 ? t("great_performance") : healthScore >= 65 ? t("doing_well") : t("needs_attention")}
                 </p>
               </div>
               <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
