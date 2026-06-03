@@ -210,7 +210,7 @@ export default function CustomerDashboard() {
                     className="h-full"
                   >
                     <Link href={`/queue/${biz.id}`} className="block h-full">
-                      <div className="bg-white dark:bg-[#1a1a1a] h-full rounded-3xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all group border border-primary/5 dark:border-white/5">
+                      <div className="bg-white dark:bg-[#1a1a1a] h-full rounded-3xl overflow-hidden shadow-sm hover:shadow-lg hover:shadow-primary/10 transition-all group border border-primary/5 dark:border-white/5">
                         {/* Image or Color Banner */}
                         <div
                           className={`h-24 relative flex items-end p-4 bg-cover bg-center bg-gradient-to-r ${CARD_COLORS[biz.category] ?? CARD_COLORS.general}`}

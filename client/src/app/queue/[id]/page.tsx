@@ -191,9 +191,11 @@ export default function QueuePage() {
                 </div>
                 <button
                   onClick={() => setNotify30Mins(!notify30Mins)}
-                  className={`relative w-12 h-7 flex items-center rounded-full p-1 transition-colors shrink-0 ${notify30Mins ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
+                  aria-pressed={notify30Mins}
+                  className={`relative w-11 h-7 flex items-center rounded-full p-0.5 transition-colors shrink-0 ${notify30Mins ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
+                  style={{ minHeight: '28px' }}
                 >
-                  <div className={`bg-white w-5 h-5 rounded-full shadow-sm transition-transform ${notify30Mins ? (dir === 'rtl' ? '-translate-x-5' : 'translate-x-5') : 'translate-x-0'}`} />
+                  <div className={`bg-white w-5 h-5 rounded-full shadow-sm transition-transform ${notify30Mins ? 'ltr:translate-x-full rtl:-translate-x-full' : 'translate-x-0'}`} />
                 </button>
               </div>
             </motion.div>
@@ -225,7 +227,7 @@ export default function QueuePage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-sun/10 border-2 border-sun/30 rounded-3xl p-5"
+              className="bg-sun/10 border-2 border-sun/30 rounded-3xl p-5 shadow-sm"
             >
               <div className="flex items-center gap-2 mb-3">
                 <Zap className="w-4 h-4 text-sun" />
@@ -262,7 +264,7 @@ export default function QueuePage() {
                       ? "bg-primary/10 border-2 border-primary/20"
                       : isMe
                       ? "bg-sun/10 border-2 border-sun/30"
-                      : "bg-cream dark:bg-[#111]"
+                      : "bg-cream dark:bg-[#111] border border-black/5 dark:border-white/5 shadow-sm"
                   }`}
                 >
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 ${

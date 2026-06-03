@@ -36,12 +36,16 @@ export default function HistoryPage() {
   const { t, dir } = useTranslation();
   const { token } = useAuth();
   const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (token) {
       ticketAPI.myHistory(token)
         .then((res) => setTickets(res.tickets))
-        .catch(console.error);
+        .catch(console.error)
+        .finally(() => setLoading(false));
+    } else {
+      setLoading(false);
     }
   }, [token]);
 
@@ -100,7 +104,23 @@ export default function HistoryPage() {
 
         {/* List */}
         <div className="flex-1 overflow-y-auto px-6 md:px-12 mt-10 pb-28">
-          {tickets.length === 0 ? (
+          {loading ? (
+            <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-6 md:mt-6">
+              {[1, 2, 3].map((n) => (
+                <div key={n} className="bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 rounded-3xl overflow-hidden animate-pulse">
+                  <div className="h-1.5 w-full bg-accent/10 dark:bg-white/10" />
+                  <div className="p-5 space-y-4">
+                    <div className="h-5 bg-accent/10 dark:bg-white/10 rounded-lg w-2/3" />
+                    <div className="h-3 bg-accent/10 dark:bg-white/10 rounded w-1/2" />
+                    <div className="flex gap-4">
+                      <div className="h-12 bg-accent/10 dark:bg-white/10 rounded-xl w-16" />
+                      <div className="h-12 bg-accent/10 dark:bg-white/10 rounded-xl w-16" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : tickets.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-accent/30 dark:text-white/30 h-64 mt-10">
               <TicketSlash className="w-14 h-14 mb-4 text-accent/30 dark:text-white/30" />
               <p className="text-xl font-bold">{t("no_history_title")}</p>
@@ -114,54 +134,55 @@ export default function HistoryPage() {
                 const catColor = item.category && CARD_COLORS[item.category.toLowerCase()] ? CARD_COLORS[item.category.toLowerCase()] : CARD_COLORS.general;
 
                 return (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.06 }}
-                    className="bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 rounded-3xl overflow-hidden transition-colors"
-                  >
-                    {/* Color accent bar */}
-                    <div className={`h-1.5 w-full bg-linear-to-r ${catColor}`} />
-                    <div className="p-5 flex items-start gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <h3 className="font-bold text-accent dark:text-white transition-colors">{item.business_name}</h3>
-                            <div className="flex items-center gap-1 text-accent/40 dark:text-white/40 transition-colors text-xs mt-0.5">
-                              <MapPin className="w-3 h-3" />
-                              <span className="capitalize">{item.category}</span>
-                              <span className="mx-1">·</span>
-                              <span>{formatDate(item.joined_at)}</span>
-                            </div>
-                          </div>
-                          <span className={`text-xs font-black px-3 py-1 rounded-full shrink-0 ${cfg.bg} ${cfg.color} flex items-center gap-1 transition-colors border border-[currentColor]/10`}>
-                            <Icon className="w-3 h-3" />
-                            {t(cfg.key)}
-                          </span>
-                        </div>
-
-                        <div className="flex items-center gap-4 mt-4">
-                          <div className="bg-cream dark:bg-[#2a2a2a] transition-colors rounded-xl px-3 py-2">
-                            <p className="text-accent/40 dark:text-white/40 transition-colors text-[10px] font-bold uppercase tracking-wider">{t("ticket_label")}</p>
-                            <p className="text-accent dark:text-white transition-colors font-black text-sm">#{String(item.ticket_number).padStart(3, '0')}</p>
-                          </div>
-                          <div className="bg-cream dark:bg-[#2a2a2a] transition-colors rounded-xl px-3 py-2">
-                            <p className="text-accent/40 dark:text-white/40 transition-colors text-[10px] font-bold uppercase tracking-wider">{t("wait_time_label")}</p>
-                            <p className="text-accent dark:text-white transition-colors font-black text-sm">{getWaitTime(item)}</p>
-                          </div>
-                          {item.status === "done" && (
-                            <Link href={`/queue/${item.queue_id}`} className="ml-auto">
-                              <div className="flex items-center gap-1 text-primary text-xs font-black">
-                                <RotateCcw className="w-3.5 h-3.5" />
-                                {t("again")}
+                  <Link key={item.id} href={`/ticket/${item.ticket_number}`} className="block group">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.06 }}
+                      className="bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 rounded-3xl overflow-hidden shadow-sm transition-all duration-200 group-hover:shadow-lg group-hover:shadow-primary/10 group-hover:border-primary/20 dark:group-hover:border-primary/30"
+                    >
+                      {/* Color accent bar */}
+                      <div className={`h-1.5 w-full bg-linear-to-r ${catColor}`} />
+                      <div className="p-5 flex items-start gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              <h3 className="font-bold text-accent dark:text-white transition-colors">{item.business_name}</h3>
+                              <div className="flex items-center gap-1 text-accent/40 dark:text-white/40 transition-colors text-xs mt-0.5">
+                                <MapPin className="w-3 h-3" />
+                                <span className="capitalize">{item.category}</span>
+                                <span className="mx-1">·</span>
+                                <span>{formatDate(item.joined_at)}</span>
                               </div>
-                            </Link>
-                          )}
+                            </div>
+                            <span className={`text-xs font-black px-3 py-1 rounded-full shrink-0 ${cfg.bg} ${cfg.color} flex items-center gap-1 transition-colors border border-[currentColor]/10`}>
+                              <Icon className="w-3 h-3" />
+                              {t(cfg.key)}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-4 mt-4">
+                            <div className="bg-cream dark:bg-[#2a2a2a] transition-colors rounded-xl px-3 py-2">
+                              <p className="text-accent/40 dark:text-white/40 transition-colors text-[10px] font-bold uppercase tracking-wider">{t("ticket_label")}</p>
+                              <p className="text-accent dark:text-white transition-colors font-black text-sm">#{String(item.ticket_number).padStart(3, '0')}</p>
+                            </div>
+                            <div className="bg-cream dark:bg-[#2a2a2a] transition-colors rounded-xl px-3 py-2">
+                              <p className="text-accent/40 dark:text-white/40 transition-colors text-[10px] font-bold uppercase tracking-wider">{t("wait_time_label")}</p>
+                              <p className="text-accent dark:text-white transition-colors font-black text-sm">{getWaitTime(item)}</p>
+                            </div>
+                            {item.status === "done" && (
+                              <Link href={`/queue/${item.queue_id}`} className="ml-auto" onClick={(e) => e.stopPropagation()}>
+                                <div className="flex items-center gap-1 text-primary text-xs font-black">
+                                  <RotateCcw className="w-3.5 h-3.5" />
+                                  {t("again")}
+                                </div>
+                              </Link>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </motion.div>
+                    </motion.div>
+                  </Link>
                 );
               })}
             </div>

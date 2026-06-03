@@ -37,13 +37,13 @@ export default function Home() {
     >
       {/* Language / Theme Toggle — always top-right regardless of dir */}
       <div className="fixed top-6 z-50" style={{ insetInlineEnd: "1.5rem" }}>
-        <ThemeLangToggle />
+        <ThemeLangToggle glassOnPrimary />
       </div>
 
       <div className="h-full flex flex-col md:flex-row">
 
         {/* LEFT (or right on RTL): Pink Hero Panel */}
-        <div className="bg-primary md:w-1/2 lg:w-[55%] flex flex-col items-center justify-center px-8 py-12 md:p-12 min-h-[50dvh] md:min-h-0 md:h-full relative overflow-hidden arch-header md:rounded-none md:rounded-br-[6rem]">
+        <div className="bg-primary md:w-1/2 lg:w-[55%] flex flex-col items-center justify-center px-8 pt-20 pb-12 md:p-12 min-h-[50dvh] md:min-h-0 md:h-full relative overflow-hidden arch-header md:rounded-none md:rounded-br-[6rem]">
           {/* Decoration */}
           <div className="absolute top-10 left-10 w-24 h-24 rounded-full border-4 border-white/20" />
           <div className="absolute bottom-20 right-[-20px] w-48 h-48 rounded-full bg-secondary/30" />

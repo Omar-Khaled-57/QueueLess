@@ -280,7 +280,7 @@ export default function AdminDashboard() {
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: 20, height: 0, marginBottom: 0 }}
                           transition={{ delay: i * 0.03 }}
-                          className="flex items-center gap-3 bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 p-4 rounded-2xl transition-colors"
+                          className="flex items-center gap-3 bg-white dark:bg-[#1a1a1a] border border-primary/5 dark:border-white/5 p-4 rounded-2xl shadow-sm transition-colors"
                         >
                           <div className="w-9 h-9 bg-cream dark:bg-[#2a2a2a] rounded-xl flex items-center justify-center font-black text-accent/40 dark:text-white/40 text-sm shrink-0 transition-colors">
                             {i + 1}
