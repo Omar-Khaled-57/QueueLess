@@ -11,22 +11,27 @@ router.get('/my', authenticate, async (req: Request, res: Response): Promise<voi
       .from('tickets')
       .select(`
         *,
-        queues!inner(name),
-        businesses!inner(name, category)
+        queues!inner (
+          name,
+          businesses!inner (name, category)
+        )
       `)
       .eq('user_id', req.user!.userId)
       .order('joined_at', { ascending: false });
 
     if (error) throw error;
 
-    const mapped = (tickets || []).map((t: Record<string, unknown>) => ({
-      ...t,
-      queue_name: (t.queues as Record<string, unknown>)?.name || null,
-      business_name: (t.businesses as Record<string, unknown>)?.name || null,
-      category: (t.businesses as Record<string, unknown>)?.category || null,
-      queues: undefined,
-      businesses: undefined,
-    }));
+    const mapped = (tickets || []).map((t: Record<string, unknown>) => {
+      const q = t.queues as Record<string, unknown> | undefined;
+      const b = q?.businesses as Record<string, unknown> | undefined;
+      return {
+        ...t,
+        queue_name: q?.name || null,
+        business_name: b?.name || null,
+        category: b?.category || null,
+        queues: undefined,
+      };
+    });
 
     res.json({ tickets: mapped });
   } catch (err) {
@@ -42,8 +47,10 @@ router.get('/my/active', authenticate, async (req: Request, res: Response): Prom
       .from('tickets')
       .select(`
         *,
-        queues!inner(name),
-        businesses!inner(name, category, address)
+        queues!inner (
+          name,
+          businesses!inner (name, category, address)
+        )
       `)
       .eq('user_id', req.user!.userId)
       .in('status', ['waiting', 'serving'])
@@ -58,6 +65,8 @@ router.get('/my/active', authenticate, async (req: Request, res: Response): Prom
     }
 
     const t = tickets[0] as Record<string, unknown>;
+    const q = t.queues as Record<string, unknown> | undefined;
+    const b = q?.businesses as Record<string, unknown> | undefined;
     const queueId = t.queue_id as number;
     const ticketNumber = t.ticket_number as number;
 
@@ -70,13 +79,12 @@ router.get('/my/active', authenticate, async (req: Request, res: Response): Prom
 
     const mapped = {
       ...t,
-      queue_name: (t.queues as Record<string, unknown>)?.name || null,
-      business_name: (t.businesses as Record<string, unknown>)?.name || null,
-      category: (t.businesses as Record<string, unknown>)?.category || null,
-      address: (t.businesses as Record<string, unknown>)?.address || null,
+      queue_name: q?.name || null,
+      business_name: b?.name || null,
+      category: b?.category || null,
+      address: b?.address || null,
       position_ahead: positionAhead ?? 0,
       queues: undefined,
-      businesses: undefined,
     };
 
     res.json({ ticket: mapped });
