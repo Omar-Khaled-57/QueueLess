@@ -11,6 +11,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useTranslation } from "@/hooks/useTranslation";
 import { businessAPI, ticketAPI, notificationsAPI, getBusinessImage, type Business, type Ticket, type Notification } from "@/lib/api";
 import Navigation from "@/components/Navigation";
+import ThemeLangToggle from "@/components/ThemeLangToggle";
 
 const CATEGORIES = ["All", "Clinic", "Bank", "Lab", "Government", "Pharmacy"];
 
@@ -83,12 +84,17 @@ export default function CustomerDashboard() {
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row items-start transition-colors duration-300" dir={dir}>
       <Navigation />
-      <div className={`w-full ${user ? "md:ms-64" : ""} min-h-screen bg-cream md:bg-cream shadow-2xl md:shadow-none flex flex-col relative transition-all`}>
+      <div className={`w-full ${user ? "md:ms-64" : ""} min-h-screen bg-cream md:bg-cream shadow-md md:shadow-none flex flex-col relative transition-all`}>
 
         {/* Top Bar */}
         <div className="bg-primary px-6 pt-10 pb-16 arch-header md:rounded-b-none md:rounded-bl-[4rem] relative overflow-hidden">
           <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/10" />
           <div className="absolute bottom-0 left-0 w-32 h-32 rounded-full bg-secondary/20" />
+          <div className="flex justify-end mb-2 relative z-10">
+            <div className="[&>div]:bg-white/10 [&>div]:border-white/20 [&_button]:bg-white/20 [&_button]:text-white">
+              <ThemeLangToggle />
+            </div>
+          </div>
           <div className="flex items-center justify-between relative z-10">
             <div>
               <p className="text-white/70 text-sm font-medium">{greeting()},</p>
@@ -164,7 +170,7 @@ export default function CustomerDashboard() {
               placeholder={t("search_businesses")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full ps-12 pe-4 py-4 rounded-2xl bg-cream border-transparent focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none text-accent font-medium shadow-sm dark:bg-[#1a1a1a] dark:text-white dark:placeholder:text-white/30"
+              className="w-full ps-12 pe-4 py-4 rounded-2xl bg-cream border-transparent focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none text-accent font-medium shadow-sm dark:bg-[#1a1a1a] dark:text-white dark:placeholder:text-white/30 dark:focus:bg-[#1a1a1a] caret-primary"
             />
           </div>
 
@@ -177,7 +183,7 @@ export default function CustomerDashboard() {
                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-bold transition-all ${
                   activeCategory === cat
                     ? "bg-primary text-white shadow-md shadow-primary/30"
-                    : "bg-cream dark:bg-[#1a1a1a] text-accent/50 dark:text-white/50 hover:bg-primary/10"
+                    : "bg-cream dark:bg-[#1a1a1a] text-accent/50 dark:text-white/50 hover:bg-primary/10 hover:text-primary"
                 }`}
               >
                 {cat}
@@ -285,7 +291,7 @@ export default function CustomerDashboard() {
                 <div className="text-center py-10 text-accent/40 font-bold">No notifications yet!</div>
               ) : (
                 notifications.map(n => (
-                  <div key={n.id} onClick={() => !n.is_read && handleMarkRead(n.id)} className={`p-4 rounded-2xl border transition-colors cursor-pointer ${!n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-[var(--color-cream)] dark:bg-[#111] border-transparent'}`}>
+                  <div key={n.id} onClick={() => !n.is_read && handleMarkRead(n.id)} className={`p-4 rounded-xl border transition-colors cursor-pointer ${!n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-[var(--color-cream)] dark:bg-[#111] border-transparent'}`}>
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <h4 className={`font-bold text-sm ${!n.is_read ? 'text-primary' : 'text-accent dark:text-white'}`}>{n.title}</h4>

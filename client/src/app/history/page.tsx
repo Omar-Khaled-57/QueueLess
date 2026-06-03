@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import {
-  Clock, CheckCircle, XCircle, RotateCcw,
+  Clock, CheckCircle, XCircle, RotateCcw, TicketSlash,
   Home, History, User, Settings, MapPin, ChevronRight
 } from "lucide-react";
 import Link from "next/link";
@@ -67,7 +67,7 @@ export default function HistoryPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row items-start transition-colors duration-300" dir={dir}>
       <Navigation />
-      <div className="w-full md:ms-64 min-h-screen bg-cream md:bg-cream dark:bg-background md:dark:bg-background shadow-2xl md:shadow-none flex flex-col relative transition-all">
+      <div className="w-full md:ms-64 min-h-screen bg-background shadow-md md:shadow-none flex flex-col relative transition-all">
 
         {/* Header */}
         <div className="bg-primary px-6 pt-10 pb-16 arch-header md:rounded-b-none md:rounded-bl-[4rem] relative overflow-hidden">
@@ -100,7 +100,7 @@ export default function HistoryPage() {
         <div className="flex-1 overflow-y-auto px-6 md:px-12 mt-10 pb-28">
           {tickets.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-accent/30 dark:text-white/30 h-64 mt-10">
-              <span className="text-6xl mb-4">📭</span>
+              <TicketSlash className="w-14 h-14 mb-4 text-accent/30 dark:text-white/30" />
               <p className="text-xl font-bold">You haven't queued yet.</p>
               <p className="text-sm mt-1">Join a queue to see your history here.</p>
             </div>

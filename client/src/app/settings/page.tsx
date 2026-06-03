@@ -16,9 +16,9 @@ function Toggle({ on, onToggle, dir }: { on: boolean; onToggle: () => void; dir:
     <button
       onClick={onToggle}
       aria-pressed={on}
-      className={`relative w-10 h-6 flex items-center rounded-full p-1 transition-colors ${on ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
+      className={`relative w-12 h-7 flex items-center rounded-full p-1 transition-colors shrink-0 ${on ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
     >
-      <div className={`bg-white w-4 h-4 rounded-full shadow-sm transition-transform ${on ? (dir === 'rtl' ? '-translate-x-4' : 'translate-x-4') : 'translate-x-0'}`} />
+      <div className={`bg-white w-5 h-5 rounded-full shadow-sm transition-transform ${on ? (dir === 'rtl' ? '-translate-x-5' : 'translate-x-5') : 'translate-x-0'}`} />
     </button>
   );
 }

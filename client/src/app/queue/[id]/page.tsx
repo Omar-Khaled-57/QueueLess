@@ -115,7 +115,7 @@ export default function QueuePage() {
   return (
     <div className="min-h-screen bg-cream flex flex-col md:flex-row items-start transition-colors duration-300">
       <Navigation />
-      <div className={`w-full ${user ? "md:ms-64" : ""} min-h-screen bg-white md:bg-cream shadow-2xl md:shadow-none flex flex-col relative transition-all`}>
+      <div className={`w-full ${user ? "md:ms-64" : ""} min-h-screen bg-white md:bg-cream shadow-md md:shadow-none flex flex-col relative transition-all overflow-x-hidden`}>
 
         {/* Header */}
         <div 
@@ -190,9 +190,9 @@ export default function QueuePage() {
                 </div>
                 <button
                   onClick={() => setNotify30Mins(!notify30Mins)}
-                  className={`relative w-10 h-6 flex items-center rounded-full p-1 transition-colors shrink-0 ${notify30Mins ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
+                  className={`relative w-12 h-7 flex items-center rounded-full p-1 transition-colors shrink-0 ${notify30Mins ? 'bg-primary' : 'bg-black/10 dark:bg-white/10'}`}
                 >
-                  <div className={`bg-white w-4 h-4 rounded-full shadow-sm transition-transform ${notify30Mins ? (dir === 'rtl' ? '-translate-x-4' : 'translate-x-4') : 'translate-x-0'}`} />
+                  <div className={`bg-white w-5 h-5 rounded-full shadow-sm transition-transform ${notify30Mins ? (dir === 'rtl' ? '-translate-x-5' : 'translate-x-5') : 'translate-x-0'}`} />
                 </button>
               </div>
             </motion.div>

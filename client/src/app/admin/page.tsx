@@ -396,7 +396,7 @@ export default function AdminDashboard() {
                 <div className="text-center py-10 text-accent/40 font-bold">No notifications yet!</div>
               ) : (
                 notifications.map(n => (
-                  <div key={n.id} onClick={() => !n.is_read && handleMarkRead(n.id)} className={`p-4 rounded-2xl border transition-colors cursor-pointer ${!n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-(--color-cream) dark:bg-[#111] border-transparent'}`}>
+                  <div key={n.id} onClick={() => !n.is_read && handleMarkRead(n.id)} className={`p-4 rounded-xl border transition-colors cursor-pointer ${!n.is_read ? 'bg-primary/5 border-primary/20' : 'bg-(--color-cream) dark:bg-[#111] border-transparent'}`}>
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <h4 className={`font-bold text-sm ${!n.is_read ? 'text-primary' : 'text-accent dark:text-white'}`}>{n.title}</h4>
