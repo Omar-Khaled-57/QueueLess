@@ -18,7 +18,15 @@ function getThemeSnapshot(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(getThemeSnapshot);
+  const [theme, setTheme] = useState<Theme>("light");
+  useEffect(() => {
+    const saved = localStorage.getItem("ql_theme") as Theme | null;
+    if (saved) {
+      setTheme(saved);
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      setTheme("dark");
+    }
+  }, []);
   useEffect(() => {
     if (theme === "dark") {
       document.documentElement.classList.add("dark");

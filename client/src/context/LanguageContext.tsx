@@ -18,7 +18,11 @@ function getLocaleSnapshot(): Locale {
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>(getLocaleSnapshot);
+  const [locale, setLocale] = useState<Locale>("en");
+  useEffect(() => {
+    const saved = localStorage.getItem("ql_locale") as Locale | null;
+    if (saved) setLocale(saved);
+  }, []);
   useEffect(() => {
     document.documentElement.dir = locale === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = locale;
