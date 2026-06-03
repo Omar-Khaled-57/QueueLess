@@ -36,7 +36,7 @@
 
 1. **Clone and install dependencies**
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/Omar-Khaled-57/queueLess.git
    cd QueueLess
 
    # Backend
