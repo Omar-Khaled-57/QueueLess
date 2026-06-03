@@ -198,7 +198,7 @@ export default function ProfilePage() {
       <div className="w-full md:ms-64 min-h-screen flex flex-col">
         {/* Header Controls */}
         <div className="absolute top-6 z-50" style={{ insetInlineEnd: "1.5rem" }}>
-          <ThemeLangToggle />
+          <ThemeLangToggle glassOnPrimary />
         </div>
 
         {/* Pink Header Banner */}

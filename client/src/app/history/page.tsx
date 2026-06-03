@@ -79,7 +79,7 @@ export default function HistoryPage() {
               <h1 className="text-white text-3xl font-bold">{t("history")}</h1>
             </div>
             <div>
-              <ThemeLangToggle />
+              <ThemeLangToggle glassOnPrimary />
             </div>
           </div>
 

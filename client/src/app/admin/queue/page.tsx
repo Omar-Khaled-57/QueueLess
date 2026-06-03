@@ -131,7 +131,7 @@ export default function QueueListPage() {
 
           {/* Toggles */}
           <div className="flex justify-end mb-4 relative z-10">
-            <ThemeLangToggle />
+            <ThemeLangToggle glassOnPrimary />
           </div>
 
           <div className="flex items-center justify-between relative z-10">

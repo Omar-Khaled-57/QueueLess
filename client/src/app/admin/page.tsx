@@ -147,7 +147,7 @@ export default function AdminDashboard() {
           <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/10" />
           {/* Top-right toggles */}
           <div className="flex justify-end mb-4 relative z-10">
-            <ThemeLangToggle />
+            <ThemeLangToggle glassOnPrimary />
           </div>
           <div className="flex items-center justify-between relative z-10">
             <div>
