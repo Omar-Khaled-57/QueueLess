@@ -10,7 +10,7 @@
     "seed": "npx ts-node db/seed_supabase.ts"
   },
   "keywords": [],
-  "author": "",
+  "author": "Omar Khaled <khaledelkhly57@gmail.com>",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
