@@ -1,5 +1,5 @@
 <h1>
-  <img src="client/public/logo-rm.webp" alt="QueueLess" width="64" height="64" style="vertical-align: middle; margin-right: 6px; border-radius: 8px;">
+  <img src="client/public/logo-rm.webp" alt="QueueLess" width="132" height="132" style="vertical-align: middle; margin-right: 6px; border-radius: 8px;">
   QueueLess
 </h1>
 
