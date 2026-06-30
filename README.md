@@ -1,10 +1,5 @@
 <h1>
-  <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 6px;">
-    <rect x="3" y="4" width="18" height="16" rx="2"/>
-    <line x1="8" y1="8" x2="8" y2="16"/>
-    <line x1="12" y1="10" x2="12" y2="16"/>
-    <line x1="16" y1="6" x2="16" y2="16"/>
-  </svg>
+  <img src="client/public/webcon.png" alt="QueueLess" width="36" height="36" style="vertical-align: middle; margin-right: 6px; border-radius: 8px;">
   QueueLess
 </h1>
 
@@ -12,10 +7,10 @@ Smart Queue & Appointment System — Eliminate physical waiting lines with a rea
 
 <p>
   <img src="https://img.shields.io/badge/Next_16-000000?logo=next.js&logoColor=white" alt="Next.js 16">
-  <img src="https://img.shields.io/badge/React_19-61DAFB?logo=react&logoColor=black" alt="React 19">
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
   <img src="https://img.shields.io/badge/Express-000000?logo=express&logoColor=white" alt="Express">
   <img src="https://img.shields.io/badge/Socket.IO-010101?logo=socket.io&logoColor=white" alt="Socket.IO">
+  <img src="https://img.shields.io/badge/React_19-61DAFB?logo=react&logoColor=black" alt="React 19">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white" alt="TypeScript">
   <img src="https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=white" alt="Supabase">
   <img src="https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS">
   <img src="https://img.shields.io/badge/i18n-EN_%2F_AR-ec4899" alt="i18n">
